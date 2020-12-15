@@ -40,8 +40,8 @@ const HarvestScreen = () => {
             <Container>
                 <BackgroundImage />
                 <Content>
-                    <Title text={t("harvest-sushi")} />
-                    <Text light={true}>{t("harvest-sushi-desc")}</Text>
+                    <Title text={t("harvest-standardHashrate")} />
+                    <Text light={true}>{t("harvest-standardHashrate-desc")}</Text>
                     <Harvest />
                 </Content>
                 {Platform.OS === "web" && <WebFooter />}

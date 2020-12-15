@@ -95,7 +95,7 @@ export const FarmingSubMenu = () => {
                     path: "/farming"
                 },
                 {
-                    title: t("harvest-sushi"),
+                    title: t("harvest-standardHashrate"),
                     path: "/farming/harvest"
                 }
             ]}

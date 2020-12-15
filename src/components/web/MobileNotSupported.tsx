@@ -5,8 +5,14 @@ import { Spacing } from "../../constants/dimension";
 import SocialIcons from "../SocialIcons";
 import Text from "../Text";
 import { Title } from "./WebHeader";
+import { useContext } from "react";
+import { GlobalContext } from "../../context/GlobalContext";
 
 const MobileNotSupported = () => {
+    const { darkMode } = useContext(GlobalContext);
+    const source = darkMode
+            ? require("../../../assets/standardHashrate-dark.png")
+            : require("../../../assets/standardHashrate.png")
     return (
         <View
             style={{
@@ -17,7 +23,7 @@ const MobileNotSupported = () => {
                 padding: Spacing.normal
             }}>
             <Image
-                source={require("../../../assets/sushiswap.jpg")}
+                source={source}
                 style={{ width: 192, height: 192, marginBottom: Spacing.normal }}
             />
             <Title />

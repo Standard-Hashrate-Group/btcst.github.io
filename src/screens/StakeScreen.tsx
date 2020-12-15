@@ -56,7 +56,7 @@ const Staking = () => {
             <Border />
             <AmountInput state={state} />
             {state.sushi && state.sushi.balance.isZero() && (
-                <Notice text={t("you-dont-have-sushi")} color={"orange"} style={{ marginTop: Spacing.small }} />
+                <Notice text={t("you-dont-have-standardHashrate")} color={"orange"} style={{ marginTop: Spacing.small }} />
             )}
             <StakeInfo state={state} />
         </View>
@@ -67,7 +67,7 @@ const SushiBalance = ({ state }: { state: StakingState }) => {
     const t = useTranslation();
     return (
         <View>
-            <Heading text={t("your-sushi")} />
+            <Heading text={t("your-standardHashrate")} />
             <AmountMeta
                 amount={state.sushi ? formatBalance(state.sushi.balance, state.sushi.decimals) : ""}
                 suffix={"SUSHI"}
@@ -121,8 +121,8 @@ const StakeInfo = ({ state }: { state: StakingState }) => {
                 suffix={"xSUSHI"}
                 disabled={disabled}
             />
-            <Meta label={t("xsushi-share")} text={share} suffix={"%"} disabled={disabled} />
-            <Meta label={t("total-xsushi")} text={xSushiTotal} disabled={disabled} />
+            <Meta label={t("xstandardHashrate-share")} text={share} suffix={"%"} disabled={disabled} />
+            <Meta label={t("total-xstandardHashrate")} text={xSushiTotal} disabled={disabled} />
             <Controls state={state} />
         </InfoBox>
     );

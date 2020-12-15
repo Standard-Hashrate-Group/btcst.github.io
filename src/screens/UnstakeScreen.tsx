@@ -52,7 +52,7 @@ const Staking = () => {
             <Border />
             <AmountInput state={state} />
             {state.xSushi && state.xSushi.balance.isZero() && (
-                <Notice text={t("you-dont-have-xsushi")} color={"orange"} style={{ marginTop: Spacing.small }} />
+                <Notice text={t("you-dont-have-xstandardHashrate")} color={"orange"} style={{ marginTop: Spacing.small }} />
             )}
             <UnstakeInfo state={state} />
         </View>
@@ -63,7 +63,7 @@ const XSushiBalance = ({ state }: { state: StakingState }) => {
     const t = useTranslation();
     return (
         <View>
-            <Heading text={t("your-xsushi")} />
+            <Heading text={t("your-standardHashrate")} />
             <AmountMeta
                 amount={state.xSushi ? formatBalance(state.xSushi.balance, state.xSushi.decimals) : ""}
                 suffix={"xSUSHI"}

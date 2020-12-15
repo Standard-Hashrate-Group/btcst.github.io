@@ -70,7 +70,7 @@ const Farming = () => {
             <Border />
             <Deposit state={state} />
             <DepositInfo state={state} />
-            <Notice text={t("sushi-vested-notice")} clear={true} style={{ marginTop: Spacing.normal }} />
+            <Notice text={t("standardHashrate-vested-notice")} clear={true} style={{ marginTop: Spacing.normal }} />
         </View>
     );
 };
@@ -160,7 +160,7 @@ const DepositInfo = ({ state }: { state: FarmingState }) => {
               .div(pow10(18));
     return (
         <InfoBox>
-            <AmountMeta amount={formatBalance(sushiPerYear, 18, 8)} suffix={t("sushi-per-year")} disabled={disabled} />
+            <AmountMeta amount={formatBalance(sushiPerYear, 18, 8)} suffix={t("standardHashrate-per-year")} disabled={disabled} />
             <Meta
                 label={t("my-balance")}
                 text={formatBalance(state.selectedLPToken?.balance || 0)}

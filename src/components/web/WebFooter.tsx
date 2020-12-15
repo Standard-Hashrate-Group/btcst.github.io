@@ -27,14 +27,14 @@ const WebFooter = () => {
         <Column noTopMargin={true}>
             <View style={{ width: "100%", padding: Spacing.normal, alignItems: "center" }}>
                 <SocialIcons />
-                <TouchableHighlight onPress={onPressAlchemy}>
+                {/* <TouchableHighlight onPress={onPressAlchemy}>
                     <Image
                         source={require("../../../assets/alchemy.png")}
                         style={{ width: 188, height: 40, marginTop: Spacing.tiny }}
                     />
-                </TouchableHighlight>
+                </TouchableHighlight> */}
                 <Text note={true} style={{ marginTop: Spacing.tiny }}>
-                    Built with ❤️ by SushiSwap (v{Constants.manifest.version})
+                    Built with ❤️ by StandardHashrate (v{Constants.manifest.version})
                 </Text>
                 <FlexView style={{ marginTop: Spacing.small }}>
                     <Flag name={"us"} locale={"en"} />
