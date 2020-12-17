@@ -101,7 +101,9 @@ export const EthersContextProvider = ({ children }) => {
                 }
             };
             const onChainChanged = async () => {
-                setChainId(Number(await ethereum.request({ method: "eth_chainId" })));
+                let chainId = Number(await ethereum.request({ method: "eth_chainId" }));
+                console.log("chainId:"+chainId);
+                setChainId(chainId);
             };
             const onDisconnect = () => {
                 setAddress(null);

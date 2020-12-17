@@ -8,6 +8,7 @@ import ConnectToWallet from "../components/web/ConnectToWallet";
 import { HEADER_HEIGHT } from "../constants/dimension";
 import { EthersContext } from "../context/EthersContext";
 import { GlobalContext } from "../context/GlobalContext";
+import {CHAINID} from "../constants/contracts";
 
 const Screen = props => {
     const { setLocale } = useContext(GlobalContext);
@@ -27,7 +28,7 @@ const Screen = props => {
 const WebScreen = props => {
     const { address, chainId } = useContext(EthersContext);
     if (!address) return <ConnectToWallet />;
-    if (chainId !== 1)
+    if (chainId !== CHAINID)
         return (
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                 <Text light={true} style={{ textAlign: "center" }}>

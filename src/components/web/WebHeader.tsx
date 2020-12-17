@@ -13,6 +13,8 @@ import FlexView from "../FlexView";
 import SvgLogoDark from "../svg/SvgLogoDark";
 import SvgLogoLight from "../svg/SvgLogoLight";
 import Text from "../Text";
+import useLinker from "../../hooks/useLinker";
+import {CHAINID} from "../../constants/contracts";
 
 export interface WebHeaderProps {
     onExpandMenu?: () => void;
@@ -65,6 +67,7 @@ export const Title = () => {
 
 const Menu = () => {
     const t = useTranslation();
+    const onPressAbout = useLinker("https://www.1-b.tc", "", "_blank");
     return (
         <FlexView
             style={{
@@ -72,11 +75,10 @@ const Menu = () => {
                 alignItems: "center"
             }}>
             <MenuItem title={t("menu.home")} path={"/"} />
-            <MenuItem title={t("menu.swap")} path={"/swap"} />
-            <MenuItem title={t("menu.liquidity")} path={"/liquidity"} />
-            <MenuItem title={t("menu.migrate")} path={"/migrate"} />
             <MenuItem title={t("menu.stake")} path={"/staking"} />
-            <MenuItem title={t("menu.farm")} path={"/farming"} />
+            <MenuItem title={t("menu.mining")} path={"/mining"} />
+            <MenuItem title={t("menu.history")} path={"/history"} />
+            <MenuItem title={t("menu.about")} path={"https://www.1-b.tc"}/>
             <DarkModeSwitch style={{ marginLeft: Spacing.small }} />
             <Status />
         </FlexView>
@@ -87,6 +89,7 @@ const MenuItem = ({ title, path }) => {
     const { textDark, textLight } = useColors();
     const match = useRouteMatch(path);
     const active = (path === "/" ? match?.isExact : true) && match?.path?.startsWith(path);
+    const target = (path.startsWith("http")? "_blank":"");
     return (
         <Link to={path} style={{ marginLeft: Spacing.tiny, marginBottom: -4, textDecoration: "none" }}>
             <Text
@@ -111,7 +114,7 @@ const Status = () => {
     const t = useTranslation();
     const { textLight, green, borderDark } = useColors();
     const { ethereum, chainId, address, ensName } = useContext(EthersContext);
-    const connected = chainId === 1 && address;
+    const connected = chainId === CHAINID && address;
     const title = connected
         ? ensName || address!.substring(0, 6) + "..." + address!.substring(address!.length - 4, address!.length)
         : t("menu.not-connected");

@@ -13,7 +13,14 @@ import ZapOut from "@sushiswap/zapper/artifacts/Sushiswap_ZapOut_General_V1.json
 import { ethers } from "ethers";
 import LPTokenScanner from "../constants/abi/LPTokenScanner.json";
 
+import IBEP20 from "../core/build/contracts/IBEP20.json";
+import IMiningFarm from "../core/build/contracts/IMiningFarm.json";
+import ISTokenERC20 from "../core/build/contracts/ISTokenERC20.json";
+
 const CONTRACTS = {
+    IBEP20,
+    IMiningFarm,
+    ISTokenERC20,
     ERC20,
     IUniswapV2Factory,
     IUniswapV2Pair,

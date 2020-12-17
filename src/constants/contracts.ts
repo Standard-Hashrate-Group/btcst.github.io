@@ -12,3 +12,9 @@ export const ZAP_IN = "0xfF350eDc2242Ca4d7252A64746aec4A5487a852B";
 export const ZAP_OUT = "0xf12CAB7Acaa14Eed3bEa82199ea2f5c2C2194B81";
 export const ORDER_BOOK = OrderBook.address;
 export const SETTLEMENT = Settlement.address;
+
+//bsc testnet
+export const BTCST = "0xA50B839AE16f7A514EAcF2772B06A8ccb8729147";
+export const BTCSTFarm = "0xF274F2ae78679E47650Aec2CBd57463e2ac84718";
+export const BBTC = "0x4923a5150cAc0141A2E7b3406b32F48674364fC8";
+export const CHAINID = 0X61;
