@@ -77,8 +77,8 @@ const Menu = () => {
             <MenuItem title={t("menu.home")} path={"/"} />
             <MenuItem title={t("menu.stake")} path={"/staking"} />
             <MenuItem title={t("menu.mining")} path={"/mining"} />
-            <MenuItem title={t("menu.history")} path={"/history"} />
-            <MenuItem title={t("menu.about")} path={"https://www.1-b.tc"}/>
+            {/* <MenuItem title={t("menu.history")} path={"/history"} /> */}
+            <MenuItem title={t("menu.about")} path={"/about"}/>
             <DarkModeSwitch style={{ marginLeft: Spacing.small }} />
             <Status />
         </FlexView>

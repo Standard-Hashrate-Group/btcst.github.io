@@ -84,6 +84,23 @@ export const StakingSubMenu = () => {
         />
     );
 };
+export const MiningSubMenu = ()=>{
+    const t = useTranslation();
+    return (
+        <WebSubMenu
+            items={[
+                {
+                    title: t("records"),
+                    path: "/mining"
+                },
+                {
+                    title: t("claim"),
+                    path: "/claim"
+                }
+            ]}
+        />
+    );
+}
 
 export const FarmingSubMenu = () => {
     const t = useTranslation();

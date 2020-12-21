@@ -23,14 +23,13 @@
       "favicon": "./assets/icon.png",
       "config": {
         "firebase": {
-          "apiKey": "AIzaSyANcyrmKaNPrM3QuRR17eA5a6iIDYt4NfQ",
-          "authDomain": "sushiswap-levx.firebaseapp.com",
-          "databaseURL": "https://sushiswap-levx.firebaseio.com",
-          "projectId": "sushiswap-levx",
-          "storageBucket": "sushiswap-levx.appspot.com",
-          "messagingSenderId": "967519785649",
-          "appId": "1:967519785649:web:131c698ed8aa881bdd8890",
-          "measurementId": "G-T98X3TB4HC"
+          "apiKey": "AIzaSyDSHHmPP6kF2RA8E_TencBEnNoKscc2PEg",
+          "authDomain": "btcst-3c5ea.firebaseapp.com",
+          "projectId": "btcst-3c5ea",
+          "storageBucket": "btcst-3c5ea.appspot.com",
+          "messagingSenderId": "570434728722",
+          "appId": "1:570434728722:web:ab940df4887c07900679cb",
+          "measurementId": "G-S2Q9R2DXSP"
         }
       }
     }

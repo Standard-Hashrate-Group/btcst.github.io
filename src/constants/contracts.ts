@@ -14,7 +14,7 @@ export const ORDER_BOOK = OrderBook.address;
 export const SETTLEMENT = Settlement.address;
 
 //bsc testnet
-export const BTCST = "0xA50B839AE16f7A514EAcF2772B06A8ccb8729147";
-export const BTCSTFarm = "0xF274F2ae78679E47650Aec2CBd57463e2ac84718";
-export const BBTC = "0x4923a5150cAc0141A2E7b3406b32F48674364fC8";
+export const BTCST = "0x975B7B36cF34b9c1dBfF4Fd18EbE72B8fCCF9BAA";
+export const BTCSTFarm = "0x8a237dc46d24A1ea20E7aa1762749083a2130fF6";
+export const BBTC = "0xb42747E83B6c230c8c926c4d349ED4cBD800D033";
 export const CHAINID = 0X61;

@@ -19,7 +19,7 @@ import TokenInput from "../components/TokenInput";
 import WebFooter from "../components/web/WebFooter";
 import { StakingSubMenu } from "../components/web/WebSubMenu";
 import { IS_DESKTOP, Spacing } from "../constants/dimension";
-import useStakingState, { StakingState } from "../hooks/useStakingState";
+import useSTStakingState, { StakingState } from "../hooks/useSTStakingState";
 import useTranslation from "../hooks/useTranslation";
 import MetamaskError from "../types/MetamaskError";
 import { formatBalance, isEmptyValue, parseBalance } from "../utils";
@@ -45,28 +45,30 @@ const SHTUnstakeScreen = () => {
 
 const Staking = () => {
     const t = useTranslation();
-    const state = useStakingState();
+    const state = useSTStakingState();
     return (
         <View style={{ marginTop: Spacing.large }}>
-            <XSushiBalance state={state} />
+            <STokenBalance state={state} />
             <Border />
             <AmountInput state={state} />
-            {state.xSushi && state.xSushi.balance.isZero() && (
-                <Notice text={t("you-dont-have-xstandardHashrate")} color={"orange"} style={{ marginTop: Spacing.small }} />
+            {state.stoken && state.yourSTokenStaked?.isZero()  && (
+                <Notice text={t("you-dont-have-staked-stoken")} color={"orange"} style={{ marginTop: Spacing.small }} />
             )}
             <UnstakeInfo state={state} />
         </View>
     );
 };
 
-const XSushiBalance = ({ state }: { state: StakingState }) => {
+const STokenBalance = ({ state }: { state: StakingState }) => {
     const t = useTranslation();
     return (
         <View>
             <Heading text={t("your-staked-BTCTS")} />
             <AmountMeta
-                amount={state.xSushi ? formatBalance(state.xSushi.balance, state.xSushi.decimals) : ""}
-                suffix={"xSUSHI"}
+                style={{marginBottom: Spacing.tiny}}
+                amount={state.yourSTokenStaked ? 
+                    formatBalance(state.yourSTokenStaked, state.stoken!.decimals) : ""}
+                suffix={"BTCST"}
             />
         </View>
     );
@@ -74,14 +76,14 @@ const XSushiBalance = ({ state }: { state: StakingState }) => {
 
 const AmountInput = ({ state }: { state: StakingState }) => {
     const t = useTranslation();
-    if (!state.xSushi || state.xSushi.balance.isZero()) {
+    if (!state.stoken || state.yourSTokenStaked.isZero()) {
         return <Heading text={t("amount-to-unstake")} disabled={true} />;
     }
     return (
         <View>
             <Heading text={t("amount-to-unstake")} />
             <TokenInput
-                token={state.xSushi}
+                token={state.stoken}
                 amount={state.amount}
                 onAmountChanged={state.setAmount}
                 autoFocus={IS_DESKTOP}
@@ -92,17 +94,17 @@ const AmountInput = ({ state }: { state: StakingState }) => {
 
 const UnstakeInfo = ({ state }: { state: StakingState }) => {
     const disabled =
-        !state.sushi || !state.xSushi || !state.sushiStaked || !state.xSushiSupply || isEmptyValue(state.amount);
-    const sushiAmount = disabled
+        !state.stoken || !state.yourSTokenStaked
+         || state.yourSTokenStaked.isZero() 
+         || isEmptyValue(state.amount);
+    const unStakeAmount = disabled
         ? undefined
-        : parseBalance(state.amount, state.xSushi!.decimals)
-              .mul(state.sushiStaked!)
-              .div(state.xSushiSupply!);
+        : parseBalance(state.amount, state.stoken!.decimals);
     return (
         <InfoBox>
             <AmountMeta
-                amount={sushiAmount ? formatBalance(sushiAmount, state.sushi!.decimals, 8) : ""}
-                suffix={"SUSHI"}
+                amount={unStakeAmount ? formatBalance(unStakeAmount, state.stoken!.decimals, 8) : ""}
+                suffix={"BTCST"}
                 disabled={disabled}
             />
             <Controls state={state} />
@@ -114,10 +116,10 @@ const Controls = ({ state }: { state: StakingState }) => {
     const [error, setError] = useState<MetamaskError>({});
     return (
         <View style={{ marginTop: Spacing.normal }}>
-            {!state.xSushi || state.xSushi.balance.isZero() || isEmptyValue(state.amount) ? (
+            {!state.stoken || state.yourSTokenStaked.isZero() || isEmptyValue(state.amount) ? (
                 <UnstakeButton state={state} onError={setError} disabled={true} />
-            ) : parseBalance(state.amount, state.xSushi.decimals).gt(state.xSushi.balance) ? (
-                <InsufficientBalanceButton symbol={state.xSushi.symbol} />
+            ) : parseBalance(state.amount, state.stoken.decimals).gt(state.yourSTokenStaked) ? (
+                <InsufficientBalanceButton symbol={state.stoken.symbol} />
             ) : state.loading ? (
                 <FetchingButton />
             ) : (

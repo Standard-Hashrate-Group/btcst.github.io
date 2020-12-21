@@ -11,6 +11,7 @@ import useTranslation from "../../hooks/useTranslation";
 import DarkModeSwitch from "../DarkModeSwitch";
 import FlexView from "../FlexView";
 import Text from "../Text";
+import {CHAINID} from "../../constants/contracts";
 
 // tslint:disable-next-line:max-func-body-length
 const MobileWebMenu = ({ expanded, onCollapse }) => {
@@ -36,11 +37,9 @@ const MobileWebMenu = ({ expanded, onCollapse }) => {
                         <Status />
                         <View style={{ height: Spacing.large }} />
                         <MobileWebMenuItem title={t("menu.home")} path={"/"} />
-                        <MobileWebMenuItem title={t("menu.swap")} path={"/swap"} />
-                        <MobileWebMenuItem title={t("menu.liquidity")} path={"/liquidity"} />
-                        <MobileWebMenuItem title={t("menu.migrate")} path={"/migrate"} />
                         <MobileWebMenuItem title={t("menu.stake")} path={"/staking"} />
-                        <MobileWebMenuItem title={t("menu.farm")} path={"/farming"} />
+                        <MobileWebMenuItem title={t("menu.mining")} path={"/mining"} />
+                        <MobileWebMenuItem title={t("menu.about")} path={"/about"} />
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -75,7 +74,7 @@ const Status = () => {
     const t = useTranslation();
     const { textLight, green, accent } = useColors();
     const { ethereum, chainId, address, ensName } = useContext(EthersContext);
-    const connected = chainId === 1 && address;
+    const connected = chainId === CHAINID && address;
     const title = connected
         ? ensName || address!.substring(0, 6) + "..." + address!.substring(address!.length - 4, address!.length)
         : t("menu.not-connected");

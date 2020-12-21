@@ -77,4 +77,9 @@ export const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US") + " " + date.toLocaleTimeString("en-US");
 };
 
+export const formatTimeKey = (value:ethers.BigNumber)=>{
+    const date = new Date(value.toNumber() * 1000);
+    return date.toLocaleDateString("zh-cn");
+};
+
 export { getContract };

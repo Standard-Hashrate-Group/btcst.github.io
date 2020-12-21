@@ -9,14 +9,18 @@ import LPTokenWithValue from "../types/LPTokenWithValue";
 import { isWETH } from "../utils";
 import { fetchLPTokenWithValue, fetchMyLPTokens, fetchMyPools } from "../utils/fetch-utils";
 import useSDK from "./useSDK";
-import { fetchTotalMinedRTokenInpool, fetchCurrentTotalStakedSTokenInpool} from "../utils/api-utils";
+import { totalSupplyOfSToken,fetchTotalMinedRTokenInpool, fetchCurrentTotalStakedSTokenInpool,viewGetTotalRewardBalanceInPool} from "../utils/api-utils";
 
 export interface HomeState {
-    totalMinedBTC:Number;
-    totalStakedBTCST:Number;
-    yourBTCInpool:Number;
-    totalMiningPower:Number;
+    totalMinedBTC:ethers.BigNumber;
+    totalStakedBTCST:ethers.BigNumber;
+    yourBTCInpool:ethers.BigNumber;
+    totalMiningPower:ethers.BigNumber;
+    
     loadingTotalMined:boolean;
+    loadingTotalStaked:boolean;
+    loadingBTCInpool:boolean;
+    loadingTotalMiningPower:boolean;
 
     loadingLPTokens: boolean;
     loadingPools: boolean;
@@ -36,41 +40,78 @@ const useHomeState = () => {
     const { getPair } = useSDK();
 
     const [loadingTotalMined,setLoadingTotalMined] = useState(true);
-    const [totalMinedBTC,setTotalMinedBTC] = useState<Number>();
-    const [totalStakedBTCST,setTotalStakedBTCST] = useState<Number>();
-    const [yourBTCInpool,setYourBTCInpool] = useState<Number>();
-    const [totalMiningPower,setTotalMiningPower] = useState<Number>();
+    const [totalMinedBTC,setTotalMinedBTC] = useState<ethers.BigNumber>();
+    const [totalStakedBTCST,setTotalStakedBTCST] = useState<ethers.BigNumber>();
+    const [loadingTotalStaked,setLoadingTotalStaked] = useState(true);
+    const [yourBTCInpool,setYourBTCInpool] = useState<ethers.BigNumber>();
+    const [loadingBTCInpool,setloadingBTCInpool] = useState(true);
+    const [totalMiningPower,setTotalMiningPower] = useState<ethers.BigNumber>();
+    const [loadingTotalMiningPower,setLoadingTotalMiningPower] = useState(true);
+    
 
     useEffect(() => {
         setLPTokens(undefined);
         setPools(undefined);
         setLoadingLPTokens(true);
         setLoadingPools(true);
-        setTotalMinedBTC(0);
-        setTotalStakedBTCST(0);
-        setYourBTCInpool(0);
-        setTotalMiningPower(0);
+        setTotalMinedBTC(undefined);
+        setTotalStakedBTCST(undefined);
+        setYourBTCInpool(undefined);
+        setTotalMiningPower(undefined);
 
-        setLoadingTotalMined(true);        
+        setLoadingTotalMined(true);
+        setLoadingTotalStaked(true);
+        setloadingBTCInpool(true);
+        setLoadingTotalMiningPower(true);
     }, [address]);
 
     //load total mined BTC in all
     useAsyncEffect(async()=>{
-        // const weth = tokens.find(t => isWETH(t));
-        console.log("before check-----");
-        if (provider && signer ) {
-            
+        if (provider && signer) {
             setLoadingTotalMined(true);
             const fetched = await fetchTotalMinedRTokenInpool(provider);
             try{
-                console.log("before passed-----");
-                console.log(fetched);
-                setTotalMinedBTC(fetched);
+                setTotalMinedBTC(await fetched);
             }finally{
                 setLoadingTotalMined(false);
             }
         }
     },[provider,signer]);
+    //load current total staked btcst
+    useAsyncEffect(async()=>{
+        if (provider && signer ){
+            setLoadingTotalStaked(true);
+            const fetched = await fetchCurrentTotalStakedSTokenInpool(provider);
+            try{
+                setTotalStakedBTCST(await fetched);
+            }finally{
+                setLoadingTotalStaked(false);
+            }
+        }
+    },[provider,signer]);
+    useAsyncEffect(async()=>{
+        if (provider && signer ){
+            setloadingBTCInpool(true);
+            const fetched = await viewGetTotalRewardBalanceInPool(await signer.getAddress(),provider);
+            try{
+                setYourBTCInpool(await fetched);
+            }finally{
+                setloadingBTCInpool(false);
+            }
+        }
+    },[provider,signer]);
+    useAsyncEffect(async()=>{
+        if (provider && signer ){
+            setLoadingTotalMiningPower(true);
+            const fetched = await totalSupplyOfSToken(provider);
+            try{
+                setTotalMiningPower(await fetched);
+            }finally{
+                setLoadingTotalMiningPower(false);
+            }
+        }
+    },[provider,signer]);
+
 
     // Load Liquidity
     // useAsyncEffect(async () => {

@@ -32,7 +32,7 @@ const WebScreen = props => {
         return (
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                 <Text light={true} style={{ textAlign: "center" }}>
-                    {"Please switch network to\n'Ethereum Mainnet'"}
+                    {"Please switch network to\n'Binance Smart Chain Testnet'"}
                 </Text>
             </View>
         );

@@ -53,7 +53,7 @@ const SHTHomeScreen = () => {
                 <Content style={{ paddingBottom: Spacing.huge }}>
                     <Title text={t("total-mined")} style={{ flex: 1 }} />
                     <Title
-                        text={loading ? t("fetching") : formatBalance(totalValue)}
+                        text={loading ||totalValue==undefined ? t("fetching") : formatBalance(totalValue)}
                         fontWeight={"light"}
                         disabled={loading}
                         style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
@@ -81,122 +81,68 @@ const Home = ({ state }: { state: HomeState }) => {
 const TotalStaked = ({ state }: { state: HomeState }) => {
     const t = useTranslation();
     const { loadingTokens, tokens } = useContext(EthersContext);
-    const goToSwap = useLinker("/swap", "Swap");
+    const goToSwap = useLinker("/staking", "Stake");
+    const staked = state.totalStakedBTCST;
+    const loading = state.loadingTotalStaked;
     return (
         <View>
-            <Heading text={t("total-staked-btcst")} buttonText={t("manage")} onPressButton={goToSwap} />
-            <TokenList loading={loadingTokens} tokens={tokens} TokenItem={TokenItem} />
+            <Heading text={t("total-staked-btcst")} buttonText={t("stake")} onPressButton={goToSwap} />
+            <Title
+                        text={loading ||staked==undefined ? t("fetching") : formatBalance(staked)}
+                        fontWeight={"light"}
+                        disabled={loading}
+                        style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
+                    />
         </View>
     );
 };
 
 const TotalMiningPower = ({ state }: { state: HomeState }) => {
     const t = useTranslation();
-    const goToRemoveLiquidity = useLinker("/liquidity/remove", "RemoveLiquidity");
+
+    const power = state.totalMiningPower!=undefined?
+            state.totalMiningPower.div(ethers.BigNumber.from(10)):undefined;
     return (
         <View>
-            <Heading text={t("total-mining-power")} buttonText={t("manage")} onPressButton={goToRemoveLiquidity} />
+            <Heading text={t("total-mining-power")} />
             {/* @ts-ignore */}
-            <TokenList loading={state.loadingLPTokens} tokens={state.lpTokens} TokenItem={LPTokenItem} />
+            <LoadingNumber loading={state.loadingTotalMiningPower} 
+                number={power} suffix={" TH/s"}/>
         </View>
     );
 };
 
 const YourBalance = ({ state }: { state: HomeState }) => {
     const t = useTranslation();
-    const goToFarming = useLinker("/farming", "Farming");
+    const goToFarming = useLinker("/claim", "Mining");
     return (
         <View>
-            <Heading text={t("your-btc-balance-inpool")} buttonText={t("manage")} onPressButton={goToFarming} />
+            <Heading text={t("your-btc-balance-inpool")} buttonText={t("claim")} onPressButton={goToFarming} />
             {/* @ts-ignore */}
-            <TokenList loading={state.loadingPools} tokens={state.pools} TokenItem={LPTokenItem} />
+            <LoadingNumber loading={state.loadingBTCInpool} number={state.yourBTCInpool} />
         </View>
     );
 };
 
-const TokenList = (props: {
-    loading: boolean;
-    tokens?: TokenWithValue[] | LPTokenWithValue[];
-    TokenItem: FC<TokenItemProps | LPTokenItemProps>;
-}) => {
-    const renderItem = useCallback(({ item }) => {
-        return <props.TokenItem key={item.address} token={item} />;
-    }, []);
-    const data = useMemo(
-        () =>
-            (props.tokens || [])
-                // @ts-ignore
-                .filter(token => !(token.amountDeposited ? token.amountDeposited.isZero() : token.balance.isZero()))
-                .sort((t1, t2) => (t2.valueUSD || 0) - (t1.valueUSD || 0)),
-        [props.tokens]
-    );
-    return props.loading ? (
+const LoadingNumber = (props:{
+    loading:boolean;
+    number:ethers.BigNumber;
+    suffix:string;
+})=>{
+    // const text = formatBalance(props.number)+""+props.suffix;
+    const suffix = props.suffix?props.suffix:"";
+    return (props.loading || props.number==undefined) ?(
         <Loading />
-    ) : data.length === 0 ? (
-        <EmptyList />
-    ) : (
-        <FlatList
-            keyExtractor={item => item.address}
-            data={data}
-            renderItem={renderItem}
-            ItemSeparatorComponent={() => <Border small={true} />}
+    ):(
+        <Title text={formatBalance(props.number)+""+suffix} fontWeight={"light"} disabled={props.loading}
+            style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
         />
     );
-};
-
-const EmptyList = () => {
-    const t = useTranslation();
-    return (
-        <View style={{ margin: Spacing.normal }}>
-            <Text disabled={true} style={{ textAlign: "center", width: "100%" }}>
-                {t("you-dont-have-assets")}
-            </Text>
-        </View>
-    );
-};
-
-const TokenItem = (props: TokenItemProps) => {
-    return (
-        <FlexView style={{ alignItems: "center", paddingHorizontal: Spacing.tiny, paddingVertical: 4 }}>
-            <TokenLogo token={props.token} disabled={props.disabled} />
-            <View>
-                <TokenPrice token={props.token} disabled={props.disabled} style={{ marginLeft: Spacing.small }} />
-                <TokenName token={props.token} disabled={props.disabled} />
-            </View>
-            <View style={{ flex: 1, alignItems: "flex-end" }}>
-                <TokenValue token={props.token} disabled={props.disabled} />
-                <FlexView>
-                    <TokenAmount token={props.token} disabled={props.disabled} />
-                    {IS_DESKTOP && <TokenSymbol token={props.token} disabled={props.disabled} />}
-                </FlexView>
-            </View>
-            <ExternalIcon path={"/tokens/" + props.token.address} />
-        </FlexView>
-    );
-};
-
-const LPTokenItem = (props: LPTokenItemProps) => {
-    return (
-        <FlexView style={{ alignItems: "center", paddingHorizontal: Spacing.tiny, paddingVertical: 4 }}>
-            <TokenLogo token={props.token.tokenA} small={true} replaceWETH={true} />
-            <TokenLogo token={props.token.tokenB} small={true} replaceWETH={true} style={{ marginLeft: 4 }} />
-            <Text medium={true} caption={true} style={{ marginLeft: Spacing.tiny }}>
-                {props.token.tokenA.symbol}-{props.token.tokenB.symbol}
-            </Text>
-            <View style={{ flex: 1, alignItems: "flex-end" }}>
-                <TokenValue token={props.token} disabled={props.disabled} />
-                <FlexView>
-                    <TokenAmount token={props.token} amount={props.token.amountDeposited} disabled={props.disabled} />
-                </FlexView>
-            </View>
-            <ExternalIcon path={"/pairs/" + props.token.address} />
-        </FlexView>
-    );
-};
+}
 
 const ExternalIcon = ({ path }) => {
     const { textDark, disabled } = useColors();
-    const onPress = () => window.open("https://sushiswapanalytics.com/" + path.toLowerCase(), "_blank");
+    const onPress = () => window.open("https://www.1-b.tc/" + path.toLowerCase(), "_blank");
     const isETH = path.endsWith(ethers.constants.AddressZero);
     return (
         <TouchableHighlight onPress={onPress} disabled={isETH}>

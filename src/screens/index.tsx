@@ -26,12 +26,11 @@ const SHTHistoryScreen = lazy(()=> import("./SHTHistoryScreen"));
 const SHTAboutScreen = lazy(()=> import("./SHTAboutScreen"));
 const SHTStakeScreen = lazy(()=> import("./SHTStakeScreen"));
 const SHTUnstakeScreen = lazy(()=> import("./SHTUnstakeScreen"));
-
+const SHTClaimScreen = lazy(()=> import("./SHTClaimScreen"));
 
 const MyLimitOrdersScreen = lazy(() => import("./MyLimitOrdersScreen"));
 const RemoveLiquidityScreen = lazy(() => import("./RemoveLiquidityScreen"));
-const StakeScreen = lazy(() => import("./StakeScreen"));
-const UnstakeScreen = lazy(() => import("./UnstakeScreen"));
+
 const SwapScreen = lazy(() => import("./SwapScreen"));
 const HomeScreen = lazy(() => import("./HomeScreen"));
 
@@ -86,6 +85,9 @@ const WebScreens = () => {
                         </Route>
                         <Route path="/mining">
                             <SHTMiningScreen/>
+                        </Route>
+                        <Route path="/claim">
+                            <SHTClaimScreen/>
                         </Route>
                         <Route path="/history">
                             <SHTHistoryScreen/>
