@@ -2,10 +2,10 @@
   "files": {
     "static/js/0.b3b5f221.chunk.js": "./static/js/0.b3b5f221.chunk.js",
     "static/js/0.b3b5f221.chunk.js.map": "./static/js/0.b3b5f221.chunk.js.map",
-    "app.js": "./static/js/app.40a1b4fb.chunk.js",
-    "app.js.map": "./static/js/app.40a1b4fb.chunk.js.map",
-    "runtime~app.js": "./static/js/runtime~app.7d560715.js",
-    "runtime~app.js.map": "./static/js/runtime~app.7d560715.js.map",
+    "app.js": "./static/js/app.6f39a378.chunk.js",
+    "app.js.map": "./static/js/app.6f39a378.chunk.js.map",
+    "runtime~app.js": "./static/js/runtime~app.5eb19273.js",
+    "runtime~app.js.map": "./static/js/runtime~app.5eb19273.js.map",
     "static/js/3.a0600dbf.chunk.js": "./static/js/3.a0600dbf.chunk.js",
     "static/js/3.a0600dbf.chunk.js.map": "./static/js/3.a0600dbf.chunk.js.map",
     "static/js/4.51529a38.chunk.js": "./static/js/4.51529a38.chunk.js",
@@ -14,8 +14,8 @@
     "static/js/5.cc64bf6c.chunk.js.map": "./static/js/5.cc64bf6c.chunk.js.map",
     "static/js/6.170a0841.chunk.js": "./static/js/6.170a0841.chunk.js",
     "static/js/6.170a0841.chunk.js.map": "./static/js/6.170a0841.chunk.js.map",
-    "static/js/7.012a57b3.chunk.js": "./static/js/7.012a57b3.chunk.js",
-    "static/js/7.012a57b3.chunk.js.map": "./static/js/7.012a57b3.chunk.js.map",
+    "static/js/7.1a8d5e24.chunk.js": "./static/js/7.1a8d5e24.chunk.js",
+    "static/js/7.1a8d5e24.chunk.js.map": "./static/js/7.1a8d5e24.chunk.js.map",
     "static/js/8.0aaf3fcf.chunk.js": "./static/js/8.0aaf3fcf.chunk.js",
     "static/js/8.0aaf3fcf.chunk.js.map": "./static/js/8.0aaf3fcf.chunk.js.map",
     "static/js/9.05122421.chunk.js": "./static/js/9.05122421.chunk.js",
@@ -96,12 +96,12 @@
     "static/media/sun.png": "./static/media/sun.3cf66943.png",
     "static/media/uk.png": "./static/media/uk.934852d7.png",
     "static/media/us.png": "./static/media/us.d367121f.png",
-    "static/media/webbg.jpg": "./static/media/webbg.2d13cebf.jpg",
+    "static/media/webbg.jpg": "./static/media/webbg.80fa5a7c.jpg",
     "tokens.json": "./tokens.json"
   },
   "entrypoints": [
-    "static/js/runtime~app.7d560715.js",
+    "static/js/runtime~app.5eb19273.js",
     "static/js/3.a0600dbf.chunk.js",
-    "static/js/app.40a1b4fb.chunk.js"
+    "static/js/app.6f39a378.chunk.js"
   ]
 }
