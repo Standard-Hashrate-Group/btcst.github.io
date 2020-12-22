@@ -123,10 +123,10 @@ export const EthersContextProvider = ({ children }) => {
     }, [ethereum]);
 
     useAsyncEffect(async () => {
-        if (provider && address) {
-            const ens = await provider.lookupAddress(address);
-            setENSName(ens);
-        }
+        // if (provider && address) {
+        //     const ens = await provider.lookupAddress(address);
+        //     setENSName(ens);
+        // }
     }, [provider, address]);
 
     const updateTokens = async () => {

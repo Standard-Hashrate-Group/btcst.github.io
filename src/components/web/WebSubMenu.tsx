@@ -96,6 +96,10 @@ export const MiningSubMenu = ()=>{
                 {
                     title: t("claim"),
                     path: "/claim"
+                },
+                {
+                    title: t("bridge"),
+                    path: "/bridge"
                 }
             ]}
         />

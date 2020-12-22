@@ -24,49 +24,29 @@ import Screen from "./Screen";
 import { GlobalContext } from "../context/GlobalContext";
 import FlexView from "../components/FlexView";
 import { Spacing } from "../constants/dimension";
+import { MiningSubMenu } from "../components/web/WebSubMenu";
 
 const SHTAboutScreen = () => {
     const t = useTranslation();
     const { darkMode } = useContext(GlobalContext);
     const { background, textLight } = useColors();
-    const onPressTwitter = useLinker("https://twitter.com/standardhashrate", "", "_blank");
-    const onPressGithub = useLinker("https://github.com/Standard-Hashrate-Group", "", "_blank");
-    const onPressDiscord = useLinker("https://discord.gg/standardhashrate", "", "_blank");
-    const onPressHome = useLinker("https://www.1-b.tc", "", "_blank");
+    const onPressHome = useLinker("https://www.binance.org/en/bridge/v1", "", "_blank");
     return (
         <Screen>
             <Container>
                 <BackgroundImage />
                 <Content>
-                    <Title text={t("about")} />
+                    <Title text={t("bridge")} />
                     <Text light={true} style={{marginBottom:Spacing.large}}>
-                        {t("about-desc")}
+                        {t("swap-desc")}
                     </Text>
 
-                    <Button title={t("home-page")} onPress={onPressHome}/>
+                    <Button title={t("go-to-binance-bridge")} onPress={onPressHome}/>
                     <Border/>
-                    <FlexView style={{ width: "100%", justifyContent: "center" }}>
-                        <SocialIcon type="github-alt" onPress={onPressGithub} />
-                        <SocialIcon type="twitter" onPress={onPressTwitter} />
-                        <SocialIcon type="wordpress" onPress={onPressHome} />
-                        <Icon
-                            type={"material-community"}
-                            name={"discord"}
-                            raised={true}
-                            reverse={true}
-                            color={background}
-                            reverseColor={darkMode ? "white" : "#7289da"}
-                            style={{ backgroundColor: background }}
-                            containerStyle={{
-                                borderWidth: 1,
-                                borderColor: darkMode ? "white" : textLight
-                            }}
-                            onPress={onPressDiscord}
-                        />
-                    </FlexView>
                 </Content>
                 {Platform.OS === "web" && <WebFooter />}
             </Container>
+            <MiningSubMenu />
         </Screen>
     );
 };

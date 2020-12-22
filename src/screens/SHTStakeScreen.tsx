@@ -39,7 +39,8 @@ const SHTStakeScreen = () => {
                 <BackgroundImage />
                 <Content>
                     <Title text={t("stake")} />
-                    <Text light={true}>{t("stake-desc")+" "
+                    <Text light={true}>{t("stake-desc")
+                    // +t("or")+" "+t("just-send-to-address")+" "+BTCSTFarm
                                     }</Text>
                     <Staking />
                 </Content>
@@ -72,7 +73,7 @@ const STokenBalance = ({ state }: { state: StakingState }) => {
     const { textDark, textLight, placeholder } = useColors();
     return (
         <View>
-            <Heading text={t("your-BTCTS")} />
+            {/* <Heading text={t("your-BTCTS")} /> */}
             <Text
                 style={{
                     fontSize: IS_DESKTOP ? 28 : 20,
@@ -160,7 +161,7 @@ const StakeInfo = ({ state }: { state: StakingState }) => {
         <InfoBox>
             <AmountMeta
                 amount={suppose ? suppose.round(8).toString() : ""}
-                suffix={"BBTC("+t("estimated")+")"}
+                suffix={t("btcb-estimated")}
                 disabled={disabled}
             />
             <Meta label={t("daily-share")} text={share} suffix={"%"} disabled={disabled} />

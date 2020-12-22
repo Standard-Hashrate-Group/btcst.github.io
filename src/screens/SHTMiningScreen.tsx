@@ -43,9 +43,9 @@ const SHTMiningScreen = () => {
             <Container>
                 <BackgroundImage />
                 <Content style={{ paddingBottom: Spacing.huge }}>
-                    <Title text={t("total-mined")} style={{ flex: 1 }} />
+                    <Title text={t("total-mined")} style={{ flex: 1,fontSize:28 }} />
                     <Title
-                        text={loading ||totalValue==undefined ? t("fetching") : formatBalance(totalValue)}
+                        text={loading ||totalValue==undefined ? t("fetching") : formatBalance(totalValue,18,8)}
                         fontWeight={"light"}
                         disabled={loading}
                         style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
@@ -63,6 +63,7 @@ const Mining = ({ state }: { state: MiningState }) => {
     return (
         <View style={{ marginTop: IS_DESKTOP ? Spacing.large : Spacing.normal }}>
             <BtcStillInPool state={state} />
+            <Border/>
             <View style={{ height: Spacing.large }} />
             <YourMiningPower state={state} />
             <View style={{ height: Spacing.large }} />
@@ -80,7 +81,7 @@ const BtcStillInPool = ({ state }: { state: MiningState }) => {
         <View>
             <Heading text={t("total-btc-still-in-pool")}/>
             <Title
-                        text={loading || amount==undefined ? t("fetching") : formatBalance(amount)}
+                        text={loading || amount==undefined ? t("fetching") : formatBalance(amount,18,8)}
                         fontWeight={"light"}
                         disabled={loading}
                         style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
@@ -170,7 +171,7 @@ const RecordList = (props: {
                         {t("date")}
                     </Text>
                 </View>
-                <ExternalIcon path={"/tokens/" } />
+                <ExternalIcon path={"/all"} />
             </FlexView>
             <FlatList
                 keyExtractor={item => item.timeKey.toString()}
@@ -186,7 +187,7 @@ const EmptyList = () => {
     return (
         <View style={{ margin: Spacing.normal }}>
             <Text disabled={true} style={{ textAlign: "center", width: "100%" }}>
-                {t("you-dont-have-assets")}
+                {t("empty-staking-records")}
             </Text>
         </View>
     );
@@ -215,13 +216,13 @@ const RecordItem = (props: StakeRecordItemProps) => {
                     {formatTimeKey(record.timeKey)}
                 </Text>
             </View>
-            <ExternalIcon path={"/tokens/" + record.timeKey} />
+            <ExternalIcon path={"/slot/" + record.timeKey} />
         </FlexView>
     );
 };
 const ExternalIcon = ({ path }) => {
     const { textDark, disabled } = useColors();
-    const onPress = () => window.open("https://sushiswapanalytics.com/" + path.toLowerCase(), "_blank");
+    const onPress = () => window.open("https://get.1-b.tc/#/history" + path.toLowerCase());
     const isETH = path.endsWith(ethers.constants.AddressZero);
     return (
         <TouchableHighlight onPress={onPress} disabled={isETH}>

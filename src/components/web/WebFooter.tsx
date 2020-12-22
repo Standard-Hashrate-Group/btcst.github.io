@@ -13,13 +13,14 @@ import Text from "../Text";
 
 const flags = {
     us: require("../../../assets/flags/us.png"),
+    uk: require("../../../assets/flags/uk.png"),
     cn: require("../../../assets/flags/cn.png"),
     kr: require("../../../assets/flags/kr.png")
 };
 
 const WebFooter = () => {
     const onPressAlchemy = useLinker(
-        "https://dashboard.alchemyapi.io/signup?referral=429fb682-0d85-40ab-ad88-daf847cf7c63",
+        "https://dashboard.alchemyapi.io/signup",
         "",
         "_blank"
     );
@@ -34,12 +35,12 @@ const WebFooter = () => {
                     />
                 </TouchableHighlight> */}
                 <Text note={true} style={{ marginTop: Spacing.tiny }}>
-                    Built with ❤️ by StandardHashrate (v{Constants.manifest.version})
+                    Built with ❤️ by Standard Hashrate (v{Constants.manifest.version})
                 </Text>
                 <FlexView style={{ marginTop: Spacing.small }}>
-                    <Flag name={"us"} locale={"en"} />
+                    <Flag name={"uk"} locale={"en"} />
                     <Flag name={"cn"} locale={"zh"} />
-                    <Flag name={"kr"} locale={"ko"} />
+                    {/* <Flag name={"kr"} locale={"ko"} /> */}
                 </FlexView>
             </View>
         </Column>

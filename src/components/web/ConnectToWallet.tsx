@@ -63,7 +63,7 @@ const WalletConnectButton = () => {
     const onPress = async () => {
         const ethereum = new WalletConnectProvider({
             rpc: {
-                1: "https://eth-mainnet.alchemyapi.io/v2/fF51JjrwO8qCZW13KRflYpqU_ZeOH1Er"
+                1: "https://mainnet.infura.io/v3/84bf00df575b4501b673748ceb629b78"
             }
         });
         await ethereum.enable();

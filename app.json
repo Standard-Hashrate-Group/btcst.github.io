@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "StandardHashrate",
-    "slug": "standardHashrate-app",
+    "name": "Standard Hashrate",
+    "slug": "standard Hashrate-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

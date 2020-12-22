@@ -71,7 +71,7 @@ const RTokenBalance = ({ state }: { state: ClaimState }) => {
     const { textDark, textLight, placeholder } = useColors();
     return (
         <View>
-            <Heading text={t("your-reward")+" "+(rtoken? rtoken.symbol:"")} />
+            {/* <Heading text={t("your-reward")+" "+(rtoken? rtoken.symbol:"")} /> */}
             <Text
                 style={{
                     fontSize: IS_DESKTOP ? 28 : 20,
@@ -80,7 +80,7 @@ const RTokenBalance = ({ state }: { state: ClaimState }) => {
                 }}>
                 {loading || !state.rtoken || !yourRTokenInpool? t("fetching")
                     :t("you-have")+" "+
-                    formatBalance(yourRTokenInpool, state.rtoken.decimals)+" "+state.rtoken.symbol
+                    formatBalance(yourRTokenInpool, state.rtoken.decimals,8)+" "+state.rtoken.symbol
                     +" "+t("in-pool")}
             </Text>
             <Text
@@ -90,7 +90,7 @@ const RTokenBalance = ({ state }: { state: ClaimState }) => {
                     color: loading? textLight : textDark 
                 }}>
                 {loading || !state.rtoken || !yourTotalRToken? ""
-                :t("all-time-mined")+" "+formatBalance(yourTotalRToken, state.rtoken.decimals)
+                :t("all-time-mined")+" "+formatBalance(yourTotalRToken, state.rtoken.decimals,8)
                }
             </Text>
         </View>

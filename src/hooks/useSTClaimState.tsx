@@ -10,7 +10,7 @@ import LPTokenWithValue from "../types/LPTokenWithValue";
 import { isWETH } from "../utils";
 import { fetchLPTokenWithValue, fetchMyLPTokens, fetchMyPools } from "../utils/fetch-utils";
 import useSDK from "./useSDK";
-import { apiClaimAmountOfReward,stakeActions,viewTotalMinedRewardFrom,viewGetTotalRewardBalanceInPool} from "../utils/api-utils";
+import { viewTotalClaimedRewardFrom,apiClaimAmountOfReward,stakeActions,viewTotalMinedRewardFrom,viewGetTotalRewardBalanceInPool} from "../utils/api-utils";
 import { BTCST,BTCSTFarm,BBTC } from "../constants/contracts";
 import { getContract, parseBalance } from "../utils";
 
@@ -80,10 +80,12 @@ const useSTClaimState = () => {
             setloading(true);
             try{
                 const totalRewardBalInpool = await viewGetTotalRewardBalanceInPool(await signer.getAddress(),provider);
-                const allTimeMined = await viewTotalMinedRewardFrom(await signer.getAddress(),provider);
+                // const allTimeMined = await viewTotalMinedRewardFrom(await signer.getAddress(),provider);
+                const withdrawed = await viewTotalClaimedRewardFrom(await signer.getAddress(),provider);
+
                 setRTokenAllowed(ethers.BigNumber.from(totalRewardBalInpool).gte(BigNumber.from(0)));
                 setYourRTokenInpool(await totalRewardBalInpool);
-                setYourTotalRToken(await allTimeMined);
+                setYourTotalRToken((await withdrawed).add(await totalRewardBalInpool));
             }finally{
                 setloading(false);
             }

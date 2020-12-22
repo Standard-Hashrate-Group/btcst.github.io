@@ -102,7 +102,11 @@ export const viewTotalMinedRewardFrom = async(account: string,provider: ethers.p
     const value = await contract.viewTotalMinedRewardFrom(account);
     return value;
 };
-
+export const viewTotalClaimedRewardFrom = async(account: string,provider: ethers.providers.JsonRpcProvider)=>{
+    const contract = getContract("IMiningFarm",BTCSTFarm,provider);
+    const value = await contract.viewTotalClaimedRewardFrom(account);
+    return value;
+};
 export const viewGetTotalRewardBalanceInPool = async(account: string,provider: ethers.providers.JsonRpcProvider)=>{
     const contract = getContract("IMiningFarm",BTCSTFarm,provider);
     const value = await contract.viewGetTotalRewardBalanceInPool(account);

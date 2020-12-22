@@ -51,9 +51,9 @@ const SHTHomeScreen = () => {
             <Container>
                 <BackgroundImage />
                 <Content style={{ paddingBottom: Spacing.huge }}>
-                    <Title text={t("total-mined")} style={{ flex: 1 }} />
+                    <Title text={t("total-mined")} style={{ flex: 1,fontSize:28 }} />
                     <Title
-                        text={loading ||totalValue==undefined ? t("fetching") : formatBalance(totalValue)}
+                        text={loading ||totalValue==undefined ? t("fetching") : formatBalance(totalValue,18,8)}
                         fontWeight={"light"}
                         disabled={loading}
                         style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
@@ -71,9 +71,10 @@ const Home = ({ state }: { state: HomeState }) => {
         <View style={{ marginTop: IS_DESKTOP ? Spacing.large : Spacing.normal }}>
             <TotalStaked state={state} />
             <View style={{ height: Spacing.large }} />
-            <YourBalance state={state} />
-            <View style={{ height: Spacing.large }} />
             <TotalMiningPower state={state} />
+            <Border />
+            <View style={{ height: Spacing.large }} />
+            <YourBalance state={state} />
         </View>
     );
 };
@@ -88,7 +89,7 @@ const TotalStaked = ({ state }: { state: HomeState }) => {
         <View>
             <Heading text={t("total-staked-btcst")} buttonText={t("stake")} onPressButton={goToSwap} />
             <Title
-                        text={loading ||staked==undefined ? t("fetching") : formatBalance(staked)}
+                        text={loading ||staked==undefined ? t("fetching") : formatBalance(staked,18)}
                         fontWeight={"light"}
                         disabled={loading}
                         style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
@@ -134,7 +135,7 @@ const LoadingNumber = (props:{
     return (props.loading || props.number==undefined) ?(
         <Loading />
     ):(
-        <Title text={formatBalance(props.number)+""+suffix} fontWeight={"light"} disabled={props.loading}
+        <Title text={formatBalance(props.number,18,8)+""+suffix} fontWeight={"light"} disabled={props.loading}
             style={{ fontSize: IS_DESKTOP ? 32 : 24 }}
         />
     );

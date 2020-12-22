@@ -15,10 +15,10 @@ import useColors from "../hooks/useColors";
 import EmptyScreen from "./EmptyScreen";
 
 
-const FarmingScreen = lazy(() => import("./FarmingScreen"));
-const HarvestScreen = lazy(() => import("./HarvestScreen"));
-const LiquidityScreen = lazy(() => import("./LiquidityScreen"));
-const MigrateScreen = lazy(() => import("./MigrateScreen"));
+// const FarmingScreen = lazy(() => import("./FarmingScreen"));
+// const HarvestScreen = lazy(() => import("./HarvestScreen"));
+// const LiquidityScreen = lazy(() => import("./LiquidityScreen"));
+// const MigrateScreen = lazy(() => import("./MigrateScreen"));
 
 const SHTHomeScreen = lazy(()=> import("./SHTHomeScreen"));
 const SHTMiningScreen = lazy(()=> import("./SHTMiningScreen"));
@@ -27,12 +27,13 @@ const SHTAboutScreen = lazy(()=> import("./SHTAboutScreen"));
 const SHTStakeScreen = lazy(()=> import("./SHTStakeScreen"));
 const SHTUnstakeScreen = lazy(()=> import("./SHTUnstakeScreen"));
 const SHTClaimScreen = lazy(()=> import("./SHTClaimScreen"));
+const SHTBridgeScreen = lazy(()=>import("./SHTBridgeScreen"));
 
-const MyLimitOrdersScreen = lazy(() => import("./MyLimitOrdersScreen"));
-const RemoveLiquidityScreen = lazy(() => import("./RemoveLiquidityScreen"));
+// const MyLimitOrdersScreen = lazy(() => import("./MyLimitOrdersScreen"));
+// const RemoveLiquidityScreen = lazy(() => import("./RemoveLiquidityScreen"));
 
-const SwapScreen = lazy(() => import("./SwapScreen"));
-const HomeScreen = lazy(() => import("./HomeScreen"));
+// const SwapScreen = lazy(() => import("./SwapScreen"));
+// const HomeScreen = lazy(() => import("./HomeScreen"));
 
 export const Screens = () => {
     const { load } = useContext(GlobalContext);
@@ -53,14 +54,8 @@ const WebScreens = () => {
             <View style={{ flex: 1, backgroundColor: background }}>
                 <Suspense fallback={<EmptyScreen />}>
                     <Switch>
-                        <Route path={"/swap/my-orders"}>
+                        {/* <Route path={"/swap/my-orders"}>
                             <MyLimitOrdersScreen />
-                        </Route>
-                        <Route path={"/swap"}>
-                            <SwapScreen />
-                        </Route>
-                        <Route path={"/liquidity/migrate"}>
-                            <Redirect to={"/migrate"} />
                         </Route>
                         <Route path={"/liquidity/remove"}>
                             <RemoveLiquidityScreen />
@@ -76,6 +71,13 @@ const WebScreens = () => {
                         </Route>
                         <Route path={"/migrate"}>
                             <MigrateScreen />
+                        </Route>
+                        <Route path={"/liquidity/migrate"}>
+                            <Redirect to={"/migrate"} />
+                        </Route> */}
+
+                        <Route path={"/bridge"}>
+                            <SHTBridgeScreen />
                         </Route>
                         <Route path={"/staking/unstake"}>
                             <SHTUnstakeScreen />
@@ -133,7 +135,7 @@ const AppScreens = () => {
                     inactiveTintColor: disabled,
                     labelStyle: { marginBottom: 4 }
                 }}>
-                <Tab.Screen name="Home" component={SwapScreen} options={tabOptions("home")} />
+                <Tab.Screen name="Home" component={SHTHomeScreen} options={tabOptions("home")} />
                 {/* <Tab.Screen name="Liquidity" component={LiquidityScreen} options={tabOptions("water")} /> */}
                 {/* <Tab.Screen name="Farming" component={FarmingScreen} options={tabOptions("leaf")} /> */}
             </Tab.Navigator>
