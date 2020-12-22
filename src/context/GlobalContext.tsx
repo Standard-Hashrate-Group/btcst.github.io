@@ -10,7 +10,7 @@ export const GlobalContext = React.createContext({
     clear: async () => {},
     locale: "",
     setLocale: async (_locale: string) => {},
-    darkMode: false,
+    darkMode: true,
     setDarkMode: async (_darkMode: boolean) => {},
     mnemonic: "",
     setMnemonic: (_mnemonic: string) => {}
@@ -28,7 +28,13 @@ export const GlobalContextProvider = ({ children }) => {
                 load: async () => {
                     setLocale((await AsyncStorage.getItem("locale")) || Localization.locale);
                     const mode = await AsyncStorage.getItem("dark_mode");
-                    setDarkMode(mode === "true");
+                    if (mode!="false"){
+                        //set default mode to true
+                        setDarkMode(true);
+                    }else{
+                        setDarkMode(mode === "true");
+                    }
+                    
                     const mne = await AsyncStorage.getItem("mnemonic");
                     if (mne) {
                         setMnemonic(mne);

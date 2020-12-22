@@ -25,7 +25,7 @@
   "loading": "请稍等…",
   "fetching": "请稍等…",
   "btcb-estimated": "BTC 每日 (预估)",
-  "total-mined": "质押 BTCSTs 产生的 BTC 历史总收益",
+  "total-mined": "合约历史总收益(BTC)",
   "total-staked-btcst": "当前 BTCSTs 质押总数",
   "total-mining-power": "等值算力",
   "your-btc-balance-inpool": "您的 BTC 余额",
@@ -81,5 +81,6 @@
   "go-to-binance-bridge": "访问 币安 Bridge",
   "insufficient": "余额不足",
   "home-page":"官网",
-  "empty-staking-records":"尚无记录"
+  "empty-staking-records":"尚无记录",
+  "insufficient-":"余额不足"
 }

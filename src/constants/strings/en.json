@@ -27,7 +27,7 @@
   "loading": "Loading…",
   "fetching": "Fetching…",
   "btcb-estimated" : "BTC daily (estimated)",
-  "total-mined": "All BTCs Mined by Staked BTCSTs",
+  "total-mined": "All-time BTC Mined by Contract",
   "total-staked-btcst":"All staked BTCSTs",
   "total-mining-power":"Mining power equivalent",
   "your-btc-balance-inpool":"Your BTC balance",
@@ -82,5 +82,6 @@
   "swap-desc" : "Follow the link below to exchange Binance BTC with native BTC.",
   "go-to-binance-bridge" : "Visit Binance Bridge",
   "home-page":"Home Page",
-  "empty-staking-records":"Empty staking records"
+  "empty-staking-records":"Empty staking records",
+  "insufficient-":"Insufficient Balance"
 }

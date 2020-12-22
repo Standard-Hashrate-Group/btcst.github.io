@@ -100,14 +100,14 @@ const TotalStaked = ({ state }: { state: HomeState }) => {
 
 const TotalMiningPower = ({ state }: { state: HomeState }) => {
     const t = useTranslation();
-
-    const power = state.totalMiningPower!=undefined?
-            state.totalMiningPower.div(ethers.BigNumber.from(10)):undefined;
+    const loading = state.loadingTotalStaked;
+    const power = state.totalStakedBTCST!=undefined?
+        state.totalStakedBTCST.div(ethers.BigNumber.from(10)):undefined;
     return (
         <View>
             <Heading text={t("total-mining-power")} />
             {/* @ts-ignore */}
-            <LoadingNumber loading={state.loadingTotalMiningPower} 
+            <LoadingNumber loading={loading} 
                 number={power} suffix={" TH/s"}/>
         </View>
     );
