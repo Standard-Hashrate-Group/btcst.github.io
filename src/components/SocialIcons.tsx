@@ -9,19 +9,20 @@ import FlexView from "./FlexView";
 const SocialIcons = () => {
     const { darkMode } = useContext(GlobalContext);
     const { background, textLight } = useColors();
-    const onPressTwitter = useLinker("http://twitter.com/BTCStandardHash", "", "_blank");
+    const onPressTwitter = useLinker("http://twitter.com/BTCST2020", "", "_blank");
     const onPressGithub = useLinker("https://github.com/Standard-Hashrate-Group", "", "_blank");
     
-    const onPressHome = useLinker("https://www.1-b.tc", "", "_blank");
-    const onPressReddit = useLinker("https://www.reddit.com/user/BTCStandardHashrate", "", "_blank");
-
+    const onMedium = useLinker("https://medium.com/@btcst2020", "", "_blank");
+    // const onPressReddit = useLinker("https://www.reddit.com/user/BTCStandardHashrate", "", "_blank");
+    const onTg = useLinker("https://t.me/BTCSTCommunity","","_blank");
     const onPressDiscord = useLinker("https://discord.com/channels/791170396316893255/791170396765945886", "", "_blank");
     return (
         <FlexView style={{ width: "100%", justifyContent: "center" }}>
             <SocialIcon type="github-alt" onPress={onPressGithub} />
             <SocialIcon type="twitter" onPress={onPressTwitter} />
-            <SocialIcon type="wordpress" onPress={onPressHome} />
-            <SocialIcon type="twitch" onPress={onPressReddit} />
+            <SocialIcon type="medium" onPress={onMedium} />
+            <SocialIcon type="telegram" onPress={onTg} />
+            {/* <SocialIcon type="twitch" onPress={onPressReddit} /> */}
             <Icon
                 type={"material-community"}
                 name={"discord"}

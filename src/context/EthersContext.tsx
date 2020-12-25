@@ -70,7 +70,7 @@ export const EthersContextProvider = ({ children }) => {
     const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner>();
     const [kovanSigner, setKovanSigner] = useState<ethers.Signer>();
     
-    const [chainIdProp, setChainId] = useState<number>(1);
+    const [chainIdProp, setChainIdProp] = useState<number>(1);
     const [address, setAddress] = useState<string | null>(null);
     const [ensName, setENSName] = useState<string | null>(null);
     const [onBlockListeners, setOnBlockListeners] = useState<{ [name: string]: OnBlockListener }>({});
@@ -84,13 +84,15 @@ export const EthersContextProvider = ({ children }) => {
     // }, [KOVAN_PROVIDER]);
     useAsyncEffect(async ()=>{
         if (library && account && chainId){
+            console.log("chainID:"+chainId);
             setProvider(library);
             const web3Signer = await library.getSigner();
             setSigner(web3Signer);
             // setSigner(getSigner(library,account));
             setAddress(account);
             Analytics.setUserId(account);
-            setChainId(chainId);
+            setChainIdProp(chainId);
+            console.log(library);
         }
     },[library,account,connector,chainId]);
 
@@ -260,7 +262,7 @@ export const EthersContextProvider = ({ children }) => {
     [setOnBlockListeners]);
 
     useEffect(() => {
-        if (provider && chainId === 1) {
+        if (provider && chainIdProp === 1) {
             const onBlock = async (block: number) => {
                 for (const listener of Object.entries(onBlockListeners)) {
                     await listener[1]?.(block);

@@ -15,6 +15,7 @@ import SvgLogoLight from "../svg/SvgLogoLight";
 import Text from "../Text";
 import useLinker from "../../hooks/useLinker";
 import {CHAINID} from "../../constants/contracts";
+import Clipboard from 'expo-clipboard';
 
 export interface WebHeaderProps {
     onExpandMenu?: () => void;
@@ -136,7 +137,11 @@ const Status = () => {
                     borderColor: borderDark
                 }}>
                 <View style={{ backgroundColor: color, width: 6, height: 6, borderRadius: 3, marginRight: 12 }} />
-                <Text style={{ fontSize: 15, color: textLight, marginRight: 2 }}>{title}</Text>
+                <Text style={{ fontSize: 15, color: textLight, marginRight: 2 }} onPress={()=>{
+                    Clipboard.setString(address?address:"");
+                }}>
+                    {title}
+                </Text>
                 {ethereum?.isWalletConnect && <CloseIcon />}
             </FlexView>
         </TouchableHighlight>

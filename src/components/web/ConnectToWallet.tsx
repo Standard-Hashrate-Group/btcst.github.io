@@ -1,5 +1,5 @@
 import React, { useContext,useState } from "react";
-import { Image, View } from "react-native";
+import { Image, View,TouchableHighlight } from "react-native";
 import Clipboard from 'expo-clipboard';
 
 import { SUPPORTED_WALLETS } from '../../constants'
@@ -10,7 +10,7 @@ import { EthersContext } from "../../context/EthersContext";
 import { GlobalContext } from "../../context/GlobalContext";
 import useColors from "../../hooks/useColors";
 import usePrevious from "../../hooks/usePrevious";
-
+import FlexView from "../FlexView";
 import useTranslation from "../../hooks/useTranslation";
 import Button from "../Button";
 import Option from "../WalletModal/Option";
@@ -20,6 +20,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import Title from "../Title";
 import getEnvVars from "../../../environment";
+import { useHistory, useLocation } from "react-router-dom";
 const {WEB_URL} = getEnvVars();
 
 const WALLET_VIEWS = {
@@ -28,7 +29,12 @@ const WALLET_VIEWS = {
     ACCOUNT: 'account',
     PENDING: 'pending'
 }
-
+const flags = {
+    us: require("../../../assets/flags/us.png"),
+    uk: require("../../../assets/flags/uk.png"),
+    cn: require("../../../assets/flags/cn.png"),
+    kr: require("../../../assets/flags/kr.png")
+};
 const ConnectWallet = () => {
     const t = useTranslation();
     const { darkMode } = useContext(GlobalContext);
@@ -47,14 +53,15 @@ const ConnectWallet = () => {
     const tryActivation = async (connector: AbstractConnector | undefined) => {
         setPendingWallet(connector) // set wallet for pending view
         setWalletView(WALLET_VIEWS.PENDING)
-    
+        
         // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
         if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
             connector.walletConnectProvider = undefined
         }
-    
+        
         connector &&
         activate(connector, undefined, true).catch(error => {
+            console.log("activate error:",error);
             if (error instanceof UnsupportedChainIdError) {
                 activate(connector) // a little janky...can't use setError because the connector isn't set
             } else {
@@ -68,7 +75,7 @@ const ConnectWallet = () => {
         return Object.keys(SUPPORTED_WALLETS).map(key => {
             const option = SUPPORTED_WALLETS[key]
             if (option.name == 'Binance Chain Wallet'){
-                if (!(window.BinanceChain)){
+                if (window.BinanceChain==undefined){
                     return (
                         <Option
                         id={`connect-${key}`}
@@ -167,7 +174,7 @@ const ConnectWallet = () => {
             {/* {window.ethereum && <ConnectButton />}
             <WalletConnectButton /> */}
             {getOptions()}
-            <Title text={t("or")} style={{fontSize:IS_DESKTOP?30:14 }}/>
+            <Title text={t("or")} style={{fontSize:IS_DESKTOP?30:14,marginTop:Spacing.tiny}}/>
             <Button
                 size={"large"}
                 type={"outline"}
@@ -175,12 +182,29 @@ const ConnectWallet = () => {
                 onPress={() => Clipboard.setString(''+WEB_URL)}
                 title={t("copy-url-to-open-in-your-wallet-dapp-broswer")}
                 containerStyle={{ width: IS_DESKTOP ? 440 : "100%" }}
-                style={{ marginTop: Spacing.small, marginHorizontal: Spacing.normal }}
-            />                
+                style={{ marginTop: Spacing.tiny, marginHorizontal: Spacing.normal }}
+            />
+            <FlexView style={{ marginTop: Spacing.small }}>
+                <Flag name={"uk"} locale={"en"} />
+                <Flag name={"cn"} locale={"zh"} />
+                {/* <Flag name={"kr"} locale={"ko"} /> */}
+            </FlexView>             
         </View>
     );
 };
 
+const Flag = ({ name, locale }) => {
+    const history = useHistory();
+    const location = useLocation();
+    const onPress = () => {
+        history.push(location.pathname + "?locale=" + locale);
+    };
+    return (
+        <TouchableHighlight onPress={onPress} style={{ marginHorizontal: 4 }}>
+            <Image source={flags[name]} style={{ width: 30, height: 20 }} />
+        </TouchableHighlight>
+    );
+};
 
 
 

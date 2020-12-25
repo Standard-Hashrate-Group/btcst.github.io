@@ -12,6 +12,7 @@ import DarkModeSwitch from "../DarkModeSwitch";
 import FlexView from "../FlexView";
 import Text from "../Text";
 import {CHAINID} from "../../constants/contracts";
+import Clipboard from 'expo-clipboard';
 
 // tslint:disable-next-line:max-func-body-length
 const MobileWebMenu = ({ expanded, onCollapse }) => {
@@ -82,11 +83,16 @@ const Status = () => {
     const onPress = () => {
         ethereum?.disconnect?.();
     };
+
     return (
         <View>
             <FlexView style={{ marginBottom: Spacing.tiny }}>
                 <View style={{ backgroundColor: color, width: 6, height: 6, borderRadius: 3, marginTop: 8 }} />
-                <Text style={{ fontSize: 18, color: textLight, marginLeft: 8 }}>{title}</Text>
+                <Text style={{ fontSize: 18, color: textLight, marginLeft: 8 }} onPress={()=>{
+                    Clipboard.setString(address?address:"");
+                }}>
+                    {title}
+                </Text>
             </FlexView>
             {ethereum?.isWalletConnect && (
                 <Text

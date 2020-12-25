@@ -20,11 +20,11 @@
   "amount-to-claim": "输入希望提取的数量",
   "you-dont-have-staked-stoken": "您没有已质押的 BTCSTs",
   "n/a": "N/A",
-  "or": " Or",
+  "or": "或者",
   "just-send-to-address": "stake BTCSTs by sending BTCSTs to the contract address:",
   "loading": "请稍等…",
   "fetching": "请稍等…",
-  "btcb-estimated": "BTC 每日 (预估)",
+  "btcb-estimated": "预估",
   "total-mined": "合约历史总收益(BTC)",
   "total-staked-btcst": "当前 BTCSTs 质押总数",
   "total-mining-power": "等值算力",
@@ -89,5 +89,6 @@
   "connect-with-wallet":"连接您的钱包",
   "install-metamask":"安装 Metamask",
   "install-binance-chain-wallet":"安装币安智能链钱包",
-  "copy-url-to-open-in-your-wallet-dapp-broswer":"点击复制链接,在您的钱包dApp浏览器中打开"
+  "copy-url-to-open-in-your-wallet-dapp-broswer":"点击复制链接,在您的钱包浏览器中打开",
+  "your-daily-reward":"您的每日BTC收益"
 }

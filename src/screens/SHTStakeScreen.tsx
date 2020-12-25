@@ -119,6 +119,7 @@ const AmountInput = ({ state }: { state: StakingState }) => {
 // tslint:disable-next-line:max-func-body-length
 const StakeInfo = ({ state }: { state: StakingState }) => {
     const t = useTranslation();
+    const { textDark, textLight, placeholder } = useColors();
     const disabled =
         !state.stoken ||
         state.yourTotalSToken.isZero() ||
@@ -131,8 +132,6 @@ const StakeInfo = ({ state }: { state: StakingState }) => {
     const btcPrice = ethers.FixedNumber.from(22715);
     const dailyBTCNetrewardPerHashUnit = dailyBTCYeild.subUnsafe(
         powerPerHashUnitDay.mulUnsafe(powerPrice).divUnsafe(btcPrice));
-
-    console.log(dailyBTCNetrewardPerHashUnit.toString()+" dailyBTCNetrewardPerHashUnit");
     
     const dailyReward = disabled
         ? undefined
@@ -159,13 +158,21 @@ const StakeInfo = ({ state }: { state: StakingState }) => {
         : suppose!.divUnsafe(dailyRewardTotal!).mulUnsafe(ethers.FixedNumber.from(100)).round(6);
     return (
         <InfoBox>
-            <AmountMeta
+            {/* <AmountMeta
                 amount={suppose ? suppose.round(8).toString() : ""}
                 suffix={t("btcb-estimated")}
                 disabled={disabled}
-            />
+            /> */}
+            <Text
+            style={{
+                fontSize: IS_DESKTOP ? 28 : 20,
+                marginBottom: Spacing.normal,
+                color: disabled ? placeholder : textLight
+            }}>
+            {disabled ? t("n/a") : t("btcb-estimated")}
+            </Text>
             <Meta label={t("daily-share")} text={share} suffix={"%"} disabled={disabled} />
-            <Meta label={t("total-daily-reward")} text={dailyRewardTotal?.toString()} disabled={disabled} />
+            <Meta label={t("your-daily-reward")} text={suppose ? suppose.round(8).toString() : ""} disabled={disabled} />
             <Controls state={state} />
         </InfoBox>
     );

@@ -45,25 +45,7 @@ const SHTAboutScreen = () => {
 
                     <Button title={t("home-page")} onPress={onPressHome}/>
                     <Border/>
-                    <FlexView style={{ width: "100%", justifyContent: "center" }}>
-                        <SocialIcon type="github-alt" onPress={onPressGithub} />
-                        <SocialIcon type="twitter" onPress={onPressTwitter} />
-                        <SocialIcon type="wordpress" onPress={onPressHome} />
-                        <Icon
-                            type={"material-community"}
-                            name={"discord"}
-                            raised={true}
-                            reverse={true}
-                            color={background}
-                            reverseColor={darkMode ? "white" : "#7289da"}
-                            style={{ backgroundColor: background }}
-                            containerStyle={{
-                                borderWidth: 1,
-                                borderColor: darkMode ? "white" : textLight
-                            }}
-                            onPress={onPressDiscord}
-                        />
-                    </FlexView>
+                    
                 </Content>
                 {Platform.OS === "web" && <WebFooter />}
             </Container>

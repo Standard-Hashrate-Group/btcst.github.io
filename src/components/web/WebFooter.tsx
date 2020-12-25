@@ -20,20 +20,20 @@ const flags = {
 
 const WebFooter = () => {
     const onPressAlchemy = useLinker(
-        "https://dashboard.alchemyapi.io/signup",
+        "https://certik.foundation/",
         "",
         "_blank"
     );
     return (
         <Column noTopMargin={true}>
             <View style={{ width: "100%", padding: Spacing.normal, alignItems: "center" }}>
-                <SocialIcons />
-                {/* <TouchableHighlight onPress={onPressAlchemy}>
+                <TouchableHighlight onPress={onPressAlchemy}>
                     <Image
-                        source={require("../../../assets/alchemy.png")}
-                        style={{ width: 188, height: 40, marginTop: Spacing.tiny }}
+                        source={require("../../../assets/certik-logo-w.png")}
+                        style={{ width: 168, height: 40, marginTop: Spacing.tiny }}
                     />
-                </TouchableHighlight> */}
+                </TouchableHighlight>
+                <SocialIcons />
                 <Text note={true} style={{ marginTop: Spacing.tiny }}>
                     Built with ❤️ by Standard Hashrate (v{Constants.manifest.version})
                 </Text>

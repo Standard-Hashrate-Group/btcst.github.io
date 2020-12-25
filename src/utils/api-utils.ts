@@ -33,8 +33,6 @@ export const fetchTotalMinedRTokenInpool = async (provider: ethers.providers.Jso
 export const fetchCurrentTotalStakedSTokenInpool = async (provider: ethers.providers.JsonRpcProvider)=>{
     const contract = getContract("IBEP20",BTCST,provider);
     const value = await contract.balanceOf(BTCSTFarm);
-    console.log("fetchCurrentTotalStakedSTokenInpool");
-    console.log(value);
     return value;
 };
 

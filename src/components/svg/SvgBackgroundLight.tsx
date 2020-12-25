@@ -14,7 +14,7 @@ import Svg, {
 import { Image, Dimensions } from "react-native";
 
 // tslint:disable-next-line:max-func-body-length
-function SvgBackgroundLight(props: SvgProps) {
+const SvgBackgroundLight = (props: SvgProps)=>{
     return (
         <Image
             source={require("../../../assets/webbg.jpg")}
