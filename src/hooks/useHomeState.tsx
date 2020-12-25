@@ -1,15 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 
 import { ethers } from "ethers";
-import sushiData from "@sushiswap/sushi-data";
 import useAsyncEffect from "use-async-effect";
 import Fraction from "../constants/Fraction";
 import { EthersContext } from "../context/EthersContext";
 import LPTokenWithValue from "../types/LPTokenWithValue";
 import { isWETH } from "../utils";
-import { fetchLPTokenWithValue, fetchMyLPTokens, fetchMyPools } from "../utils/fetch-utils";
 import useSDK from "./useSDK";
-import { totalSupplyOfSToken,fetchTotalMinedRTokenInpool, fetchCurrentTotalStakedSTokenInpool,viewGetTotalRewardBalanceInPool} from "../utils/api-utils";
+import { totalSupplyOfSToken,fetchTotalMinedRTokenInpool,
+     fetchCurrentTotalStakedSTokenInpool,viewGetTotalRewardBalanceInPool} from "../utils/api-utils";
 
 export interface HomeState {
     totalMinedBTC:ethers.BigNumber;
@@ -22,20 +21,11 @@ export interface HomeState {
     loadingBTCInpool:boolean;
     loadingTotalMiningPower:boolean;
 
-    loadingLPTokens: boolean;
-    loadingPools: boolean;
-    lpTokens?: LPTokenWithValue[];
-    pools?: LPTokenWithValue[];
 }
 
 // tslint:disable-next-line:max-func-body-length
 const useHomeState = () => {
     const { provider, signer, address, tokens } = useContext(EthersContext);
-    
-    const [lpTokens, setLPTokens] = useState<LPTokenWithValue[]>();
-    const [pools, setPools] = useState<LPTokenWithValue[]>();
-    const [loadingLPTokens, setLoadingLPTokens] = useState(true);
-    const [loadingPools, setLoadingPools] = useState(true);
     
     const { getPair } = useSDK();
 
@@ -50,10 +40,6 @@ const useHomeState = () => {
     
 
     useEffect(() => {
-        setLPTokens(undefined);
-        setPools(undefined);
-        setLoadingLPTokens(true);
-        setLoadingPools(true);
         setTotalMinedBTC(undefined);
         setTotalStakedBTCST(undefined);
         setYourBTCInpool(undefined);
@@ -156,13 +142,7 @@ const useHomeState = () => {
         totalStakedBTCST,
         yourBTCInpool,
         totalMiningPower,
-        loadingTotalMined,
-
-        loadingLPTokens,
-        loadingPools,
-        tokens,
-        lpTokens,
-        pools
+        loadingTotalMined
     };
 };
 

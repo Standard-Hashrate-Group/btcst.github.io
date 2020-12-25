@@ -14,6 +14,7 @@ if (__DEV__) {
     YellowBox.ignoreWarnings(["Setting a timer", "VirtualizedLists should never be nested"]);
 }
 
+
 const App = () => {
     const [fontsLoaded] = useFonts({
         light: OpenSans_300Light,

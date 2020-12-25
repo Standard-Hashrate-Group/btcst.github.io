@@ -15,7 +15,7 @@ const SocialIcons = () => {
     const onPressHome = useLinker("https://www.1-b.tc", "", "_blank");
     const onPressReddit = useLinker("https://www.reddit.com/user/BTCStandardHashrate", "", "_blank");
 
-    const onPressDiscord = useLinker("https://discord.gg/standardhashrate", "", "_blank");
+    const onPressDiscord = useLinker("https://discord.com/channels/791170396316893255/791170396765945886", "", "_blank");
     return (
         <FlexView style={{ width: "100%", justifyContent: "center" }}>
             <SocialIcon type="github-alt" onPress={onPressGithub} />

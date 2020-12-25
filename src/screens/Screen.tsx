@@ -9,6 +9,9 @@ import { HEADER_HEIGHT } from "../constants/dimension";
 import { EthersContext } from "../context/EthersContext";
 import { GlobalContext } from "../context/GlobalContext";
 import {CHAINID} from "../constants/contracts";
+import useTranslation from "../hooks/useTranslation";
+import getEnvVars from '../../environment';
+const {CHAIN_NAME} =getEnvVars()
 
 const Screen = props => {
     const { setLocale } = useContext(GlobalContext);
@@ -27,12 +30,13 @@ const Screen = props => {
 
 const WebScreen = props => {
     const { address, chainId } = useContext(EthersContext);
+    const t = useTranslation();
     if (!address) return <ConnectToWallet />;
     if (chainId !== CHAINID)
         return (
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                 <Text light={true} style={{ textAlign: "center" }}>
-                    {"Please switch network to\n'Binance Smart Chain Testnet'"}
+                    {t("please-switch-network")+CHAIN_NAME}
                 </Text>
             </View>
         );

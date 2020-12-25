@@ -1,5 +1,7 @@
 import OrderBook from "@sushiswap/settlement/deployments/kovan/OrderBook.json";
 import Settlement from "@sushiswap/settlement/deployments/mainnet/Settlement.json";
+import getEnvVars from '../../environment';
+const {CONTRACT,REACT_APP_CHAIN_ID} =getEnvVars()
 
 // export const UNISWAP_ROUTER = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 export const SUSHISWAP_ROUTER = "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f";
@@ -14,7 +16,7 @@ export const ORDER_BOOK = OrderBook.address;
 export const SETTLEMENT = Settlement.address;
 
 //bsc testnet
-export const BTCST = "0xa1ea2f1cadb89B1782b2e4C8C3Aaa472E2104aa1";
-export const BTCSTFarm = "0xA2B49Ad2Fb14C91f6b361E03c15C6BDF53D66d5C";
-export const BBTC = "0x38F4Ab9E4EEC0F9AC0Ca9d9eFe42FC7b7C230343";
-export const CHAINID = 0X61;
+export const BTCST = CONTRACT.STOKEN;
+export const BTCSTFarm = CONTRACT.FARM;
+export const BBTC = CONTRACT.RTOKEN;
+export const CHAINID = REACT_APP_CHAIN_ID;

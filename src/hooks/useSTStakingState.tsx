@@ -101,13 +101,16 @@ const useSTStakingState = () => {
             setEntering(true);
             try {
                 const parsed = parseBalance(amount, stoken.decimals);
+                console.log("before entering");
                 const tx = await enter(parsed, signer);
+                console.log("before wait");
                 if (tx) {
                     await tx.wait();
                     // await updateTokens();
                     setAmount("");
                     const txs = txHappend+1;
                     setTxHappend(txs);
+                    console.log("after wait");
                 }
             } finally {
                 setEntering(false);

@@ -82,5 +82,12 @@
   "insufficient": "余额不足",
   "home-page":"官网",
   "empty-staking-records":"尚无记录",
-  "insufficient-":"余额不足"
+  "insufficient-":"余额不足",
+  "please-switch-network":"请切换区块链网络到\n'BSC 主网'",
+  "unknownError":"未知错误",
+  "no-ethereum-provider-found":"没有找到钱包插件",
+  "connect-with-wallet":"连接您的钱包",
+  "install-metamask":"安装 Metamask",
+  "install-binance-chain-wallet":"安装币安智能链钱包",
+  "copy-url-to-open-in-your-wallet-dapp-broswer":"点击复制链接,在您的钱包dApp浏览器中打开"
 }

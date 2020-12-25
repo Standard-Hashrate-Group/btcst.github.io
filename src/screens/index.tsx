@@ -13,7 +13,7 @@ import { EthersContext } from "../context/EthersContext";
 import { GlobalContext } from "../context/GlobalContext";
 import useColors from "../hooks/useColors";
 import EmptyScreen from "./EmptyScreen";
-
+import Web3ReactManager from "../components/Web3ReactManager"
 
 // const FarmingScreen = lazy(() => import("./FarmingScreen"));
 // const HarvestScreen = lazy(() => import("./HarvestScreen"));
@@ -53,29 +53,8 @@ const WebScreens = () => {
         <Router>
             <View style={{ flex: 1, backgroundColor: background }}>
                 <Suspense fallback={<EmptyScreen />}>
+                    <Web3ReactManager>
                     <Switch>
-                        {/* <Route path={"/swap/my-orders"}>
-                            <MyLimitOrdersScreen />
-                        </Route>
-                        <Route path={"/liquidity/remove"}>
-                            <RemoveLiquidityScreen />
-                        </Route>
-                        <Route path={"/liquidity"}>
-                            <LiquidityScreen />
-                        </Route>
-                        <Route path={"/farming/harvest"}>
-                            <HarvestScreen />
-                        </Route>
-                        <Route path={"/farming"}>
-                            <FarmingScreen />
-                        </Route>
-                        <Route path={"/migrate"}>
-                            <MigrateScreen />
-                        </Route>
-                        <Route path={"/liquidity/migrate"}>
-                            <Redirect to={"/migrate"} />
-                        </Route> */}
-
                         <Route path={"/bridge"}>
                             <SHTBridgeScreen />
                         </Route>
@@ -102,6 +81,7 @@ const WebScreens = () => {
                         </Route>
                         <Redirect to={"/"} />
                     </Switch>
+                    </Web3ReactManager>
                 </Suspense>
                 <WebHeader onExpandMenu={() => setMenuExpanded(true)} />
                 {!IS_DESKTOP && <MobileWebMenu expanded={menuExpanded} onCollapse={() => setMenuExpanded(false)} />}

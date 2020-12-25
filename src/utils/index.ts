@@ -3,6 +3,11 @@ import { ethers } from "ethers";
 import { ETH } from "../constants/tokens";
 import Token from "../types/Token";
 import getContract from "./getContract";
+import { Contract } from '@ethersproject/contracts'
+import { getAddress } from '@ethersproject/address'
+import { AddressZero } from '@ethersproject/constants'
+import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
+import { BigNumber } from '@ethersproject/bignumber'
 
 export const formatUSD = (value: number, maxFraction = 0) => {
     const formatter = new Intl.NumberFormat("en-US", {
@@ -81,5 +86,39 @@ export const formatTimeKey = (value:ethers.BigNumber)=>{
     const date = new Date(value.toNumber() * 1000);
     return date.toLocaleDateString("zh-cn");
 };
+// returns the checksummed address if the address is valid, otherwise returns false
+export function isAddress(value: any): string | false {
+    try {
+        return getAddress(value)
+    } catch {
+        return false
+    }
+}
+
+// shorten the checksummed version of the input address to have 0x + 4 characters at start and end
+export function shortenAddress(address: string, chars = 4): string {
+    const parsed = isAddress(address)
+    if (!parsed) {
+      throw Error(`Invalid 'address' parameter '${address}'.`)
+    }
+    return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
+}
+  
+  // add 10%
+export function calculateGasMargin(value: BigNumber): BigNumber {
+    return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))
+}
+
+// account is not optional
+export function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
+    return library.getSigner(account);
+    // return library.getSigner(account).connectUnchecked();
+}
+  
+  // account is optional
+export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner {
+    return account ? getSigner(library, account) : library
+}
+
 
 export { getContract };

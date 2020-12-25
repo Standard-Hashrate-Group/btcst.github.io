@@ -33,10 +33,20 @@ export default interface Ethereum {
     request(args: RequestArguments): Promise<any>;
     on(eventName: EventType, listener: Listener);
     off(eventName: EventType, listener: Listener);
+    removeListener?: (...args: any[]) => void;
 }
+interface BinanceChain {
+    send: unknown
+    enable: () => Promise<string[]>
+    on?: (method: string, listener: (...args: any[]) => void) => void
+    removeListener?: (method: string, listener: (...args: any[]) => void) => void
+  }
+  
 
 declare global {
     interface Window {
         ethereum?: Ethereum;
+        web3?: {};
+        BinanceChain?: BinanceChain;
     }
 }

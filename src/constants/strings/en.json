@@ -83,5 +83,12 @@
   "go-to-binance-bridge" : "Visit Binance Bridge",
   "home-page":"Home Page",
   "empty-staking-records":"Empty staking records",
-  "insufficient-":"Insufficient Balance"
+  "insufficient-":"Insufficient Balance",
+  "please-switch-network":"Please switch network to\n ",
+  "unknownError":"Unknown Error",
+  "no-ethereum-provider-found":"No wallet provider found",
+  "connect-with-wallet":"Connect with wallet",
+  "install-metamask":"Install Metamask",
+  "install-binance-chain-wallet":"Install Binance Chain Wallet",
+  "copy-url-to-open-in-your-wallet-dapp-broswer":"Click to copy this url, open it in your wallet dApp broswer"
 }

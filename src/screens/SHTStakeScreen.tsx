@@ -215,6 +215,7 @@ const StakeButton = ({
             state.setAmount("");
         } catch (e) {
             onError(e);
+            console.log(e);
         }
     };
     return <Button title={t("stake")} loading={state.entering} onPress={onPress} disabled={disabled} />;

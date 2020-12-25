@@ -12,21 +12,23 @@ import useSDK from "../hooks/useSDK";
 import Ethereum from "../types/Ethereum";
 import Token from "../types/Token";
 import TokenWithValue from "../types/TokenWithValue";
-import { getContract, isWETH } from "../utils";
+import { getContract, getSigner, isWETH } from "../utils";
 import { logTransaction } from "../utils/analytics-utils";
-import { fetchTokens, fetchTokenWithValue } from "../utils/fetch-utils";
+import { useActiveWeb3React } from '../hooks'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
+import {ChainId} from "../constants"
 
 export type OnBlockListener = (block?: number) => void | Promise<void>;
 
-const PRIVATE_KEY = "0xca417c154948d370f011c5d9ac3fba516d7b15671a069e7d5d48f56b723c9cc1";
-export const ALCHEMY_PROVIDER = new ethers.providers.AlchemyProvider(
-    1,
-    __DEV__ ? process.env.MAINNET_API_KEY : "DgnfFsj5PXR37FkOmUVJ9GtfDsKws446"
-);
-const KOVAN_PROVIDER = new ethers.providers.AlchemyProvider(
-    42,
-    __DEV__ ? process.env.KOVAN_API_KEY : "8a03ORJJcIv8YA49M-cIxg-mBEMJYe0J"
-);
+// const PRIVATE_KEY = "0xca417c154948d370f011c5d9ac3fba516d7b15671a069e7d5d48f56b723c9cc1";
+// export const ALCHEMY_PROVIDER = new ethers.providers.AlchemyProvider(
+//     1,
+//     __DEV__ ? process.env.MAINNET_API_KEY : "DgnfFsj5PXR37FkOmUVJ9GtfDsKws446"
+// );
+// const KOVAN_PROVIDER = new ethers.providers.AlchemyProvider(
+//     42,
+//     __DEV__ ? process.env.KOVAN_API_KEY : "8a03ORJJcIv8YA49M-cIxg-mBEMJYe0J"
+// );
 
 export const EthersContext = React.createContext({
     ethereum: undefined as Ethereum | undefined,
@@ -39,12 +41,12 @@ export const EthersContext = React.createContext({
     ensName: null as string | null,
     addOnBlockListener: (_name: string, _listener: OnBlockListener) => {},
     removeOnBlockListener: (_name: string) => {},
-    tokens: [ETH] as TokenWithValue[],
-    updateTokens: async () => {},
-    loadingTokens: false,
-    customTokens: [ETH] as Token[],
-    addCustomToken: (_token: Token) => {},
-    removeCustomToken: (_token: Token) => {},
+    // tokens: [ETH] as TokenWithValue[],
+    // updateTokens: async () => {},
+    // loadingTokens: false,
+    // customTokens: [ETH] as Token[],
+    // addCustomToken: (_token: Token) => {},
+    // removeCustomToken: (_token: Token) => {},
     approveToken: async (_token: string, _spender: string, _amount?: ethers.BigNumber) => {
         return {} as ethers.providers.TransactionResponse | undefined;
     },
@@ -61,130 +63,145 @@ export const EthersContext = React.createContext({
 
 // tslint:disable-next-line:max-func-body-length
 export const EthersContextProvider = ({ children }) => {
-    const { getPair } = useSDK();
+    const { library, account, connector,chainId } = useActiveWeb3React();
+    // const { getPair } = useSDK();
     const [ethereum, setEthereum] = useState<Ethereum | undefined>(window.ethereum);
     const [provider, setProvider] = useState<ethers.providers.JsonRpcProvider>();
     const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner>();
     const [kovanSigner, setKovanSigner] = useState<ethers.Signer>();
-    const [chainId, setChainId] = useState<number>(1);
+    
+    const [chainIdProp, setChainId] = useState<number>(1);
     const [address, setAddress] = useState<string | null>(null);
     const [ensName, setENSName] = useState<string | null>(null);
     const [onBlockListeners, setOnBlockListeners] = useState<{ [name: string]: OnBlockListener }>({});
-    const [tokens, setTokens] = useState<TokenWithValue[]>([]);
-    const [customTokens, setCustomTokens] = useState<Token[]>([]);
-    const [loadingTokens, setLoadingTokens] = useState(true);
+    // const [tokens, setTokens] = useState<TokenWithValue[]>([]);
+    // const [customTokens, setCustomTokens] = useState<Token[]>([]);
+    // const [loadingTokens, setLoadingTokens] = useState(true);
 
-    useEffect(() => {
-        // Kovan
-        setKovanSigner(new ethers.Wallet(PRIVATE_KEY, KOVAN_PROVIDER));
-    }, [KOVAN_PROVIDER]);
-
-    useAsyncEffect(async () => {
-        // Mainnet
-        if (ethereum) {
-            const web3 = new ethers.providers.Web3Provider(ethereum);
-            const web3Signer = await web3.getSigner();
-            setProvider(ethereum.isMetaMask ? web3Signer.provider : ALCHEMY_PROVIDER);
+    // useEffect(() => {
+    //     // Kovan
+    //     setKovanSigner(new ethers.Wallet(PRIVATE_KEY, KOVAN_PROVIDER));
+    // }, [KOVAN_PROVIDER]);
+    useAsyncEffect(async ()=>{
+        if (library && account && chainId){
+            setProvider(library);
+            const web3Signer = await library.getSigner();
             setSigner(web3Signer);
+            // setSigner(getSigner(library,account));
+            setAddress(account);
+            Analytics.setUserId(account);
+            setChainId(chainId);
         }
-    }, [ethereum]);
+    },[library,account,connector,chainId]);
 
-    useEffect(() => {
-        if (ethereum) {
-            const onAccountsChanged = async () => {
-                const accounts = await ethereum.request({ method: "eth_accounts" });
-                if (accounts?.[0]) {
-                    setAddress(accounts[0]);
-                    Analytics.setUserId(accounts[0]);
-                } else {
-                    setAddress(null);
-                }
-            };
-            const onChainChanged = async () => {
-                let chainId = Number(await ethereum.request({ method: "eth_chainId" }));
-                console.log("chainId:"+chainId);
-                setChainId(chainId);
-            };
-            const onDisconnect = () => {
-                setAddress(null);
-                setEthereum(undefined);
-            };
-            onAccountsChanged();
-            onChainChanged();
-            ethereum.on("accountsChanged", onAccountsChanged);
-            ethereum.on("chainChanged", onChainChanged);
-            ethereum.on("disconnect", onDisconnect);
-            return () => {
-                ethereum.off("accountsChanged", onAccountsChanged);
-                ethereum.off("chainChanged", onAccountsChanged);
-                ethereum.off("disconnect", onDisconnect);
-            };
-        }
-    }, [ethereum]);
+    // useAsyncEffect(async () => {
+    //     // Mainnet
+    //     if (ethereum) {
+    //         const web3 = new ethers.providers.Web3Provider(ethereum);
+    //         const web3Signer = await web3.getSigner();
+    //         // setProvider(ethereum.isMetaMask ? web3Signer.provider : ALCHEMY_PROVIDER);
+    //         setProvider(ethereum.isMetaMask ? web3Signer.provider : undefined);
+    //         setSigner(web3Signer);
+    //     }
+    // }, [ethereum]);
 
-    useAsyncEffect(async () => {
-        // if (provider && address) {
-        //     const ens = await provider.lookupAddress(address);
-        //     setENSName(ens);
-        // }
-    }, [provider, address]);
+    // useEffect(() => {
+    //     if (ethereum) {
+    //         const onAccountsChanged = async () => {
+    //             const accounts = await ethereum.request({ method: "eth_accounts" });
+    //             if (accounts?.[0]) {
+    //                 setAddress(accounts[0]);
+    //                 Analytics.setUserId(accounts[0]);
+    //             } else {
+    //                 setAddress(null);
+    //             }
+    //         };
+    //         const onChainChanged = async () => {
+    //             let chainId = Number(await ethereum.request({ method: "eth_chainId" }));
+    //             console.log("chainId:"+chainId);
+    //             setChainId(chainId);
+    //         };
+    //         const onDisconnect = () => {
+    //             setAddress(null);
+    //             setEthereum(undefined);
+    //         };
+    //         onAccountsChanged();
+    //         onChainChanged();
+    //         ethereum.on("accountsChanged", onAccountsChanged);
+    //         ethereum.on("chainChanged", onChainChanged);
+    //         ethereum.on("disconnect", onDisconnect);
+    //         return () => {
+    //             ethereum.off("accountsChanged", onAccountsChanged);
+    //             ethereum.off("chainChanged", onAccountsChanged);
+    //             ethereum.off("disconnect", onDisconnect);
+    //         };
+    //     }
+    // }, [ethereum]);
 
-    const updateTokens = async () => {
-        if (address && customTokens) {
-            try {
-                const list = await fetchTokens(address, customTokens);
-                const weth = list.find(t => isWETH(t));
-                if (list?.length > 0 && weth && provider) {
-                    const wethPriceUSD = Fraction.parse(String(await sushiData.weth.price()));
-                    setTokens(
-                        await Promise.all(
-                            list.map(
-                                async token => await fetchTokenWithValue(token, weth, wethPriceUSD, getPair, provider)
-                            )
-                        )
-                    );
-                }
-            } finally {
-                setLoadingTokens(false);
-            }
-        }
-    };
+    // useAsyncEffect(async () => {
+    //     if (provider && address) {
+    //         const ens = await provider.lookupAddress(address);
+    //         setENSName(ens);
+    //     }
+    // }, [provider, address]);
 
-    useAsyncEffect(async () => {
-        setCustomTokens(JSON.parse((await AsyncStorage.getItem("custom_tokens")) || "[]"));
-    }, []);
+    // const updateTokens = async () => {
+    //     if (address && customTokens) {
+    //         try {
+    //             const list = await fetchTokens(address, customTokens);
+    //             const weth = list.find(t => isWETH(t));
+    //             if (list?.length > 0 && weth && provider) {
+    //                 const wethPriceUSD = Fraction.parse(String(await sushiData.weth.price()));
+    //                 setTokens(
+    //                     await Promise.all(
+    //                         list.map(
+    //                             async token => await fetchTokenWithValue(token, weth, wethPriceUSD, getPair, provider)
+    //                         )
+    //                     )
+    //                 );
+    //             }
+    //         } finally {
+    //             setLoadingTokens(false);
+    //         }
+    //     }
+    //     setLoadingTokens(false);
+    // };
 
-    useAsyncEffect(async () => {
-        if (address && customTokens) {
-            setLoadingTokens(true);
-            await updateTokens();
-        }
-    }, [address, customTokens]);
+    // useAsyncEffect(async () => {
+    //     setCustomTokens(JSON.parse((await AsyncStorage.getItem("custom_tokens")) || "[]"));
+    // }, []);
 
-    const addCustomToken = useCallback(
-        async (token: Token) => {
-            if (
-                customTokens.findIndex(t => t.address === token.address) === -1 &&
-                tokens.findIndex(t => t.address === token.address) === -1
-            ) {
-                const custom = [...customTokens, token];
-                setCustomTokens(custom);
-                await AsyncStorage.setItem("custom_tokens", JSON.stringify(custom));
-            }
-        },
-        [tokens, customTokens]
-    );
+    // useAsyncEffect(async () => {
+    //     if (address && customTokens) {
+    //         setLoadingTokens(true);
+    //         await updateTokens();
+    //     }
+    // }, [address, customTokens]);
 
-    const removeCustomToken = useCallback(
-        async (token: Token) => {
-            if (customTokens.findIndex(t => t.address === token.address) !== -1) {
-                const custom = customTokens.filter(t => t.address !== token.address);
-                setCustomTokens(custom);
-                await AsyncStorage.setItem("custom_tokens", JSON.stringify(custom));
-            }
-        },
-        [customTokens]
-    );
+    // const addCustomToken = useCallback(
+    //     async (token: Token) => {
+    //         if (
+    //             customTokens.findIndex(t => t.address === token.address) === -1 &&
+    //             tokens.findIndex(t => t.address === token.address) === -1
+    //         ) {
+    //             const custom = [...customTokens, token];
+    //             setCustomTokens(custom);
+    //             await AsyncStorage.setItem("custom_tokens", JSON.stringify(custom));
+    //         }
+    //     },
+    //     [tokens, customTokens]
+    // );
+
+    // const removeCustomToken = useCallback(
+    //     async (token: Token) => {
+    //         if (customTokens.findIndex(t => t.address === token.address) !== -1) {
+    //             const custom = customTokens.filter(t => t.address !== token.address);
+    //             setCustomTokens(custom);
+    //             await AsyncStorage.setItem("custom_tokens", JSON.stringify(custom));
+    //         }
+    //     },
+    //     [customTokens]
+    // );
 
     const approveToken = useCallback(
         async (token: string, spender: string, amount?: ethers.BigNumber) => {
@@ -198,8 +215,7 @@ export const EthersContextProvider = ({ children }) => {
                 return await logTransaction(tx, "ERC20.approve()", spender, amount.toString());
             }
         },
-        [signer]
-    );
+    [signer]);
 
     const getTokenAllowance = useCallback(
         async (token: string, spender: string) => {
@@ -208,8 +224,7 @@ export const EthersContextProvider = ({ children }) => {
                 return erc20.allowance(address, spender);
             }
         },
-        [provider, address]
-    );
+    [provider, address]);
 
     const getTokenBalance = useCallback(
         async (token: string, who: string) => {
@@ -218,8 +233,7 @@ export const EthersContextProvider = ({ children }) => {
                 return await erc20.balanceOf(who);
             }
         },
-        [provider]
-    );
+    [provider]);
 
     const getTotalSupply = useCallback(
         async (token: string) => {
@@ -228,15 +242,13 @@ export const EthersContextProvider = ({ children }) => {
                 return await erc20.totalSupply();
             }
         },
-        [provider]
-    );
+    [provider]);
 
     const addOnBlockListener = useCallback(
         (name, listener) => {
             setOnBlockListeners(old => ({ ...old, [name]: listener }));
         },
-        [setOnBlockListeners]
-    );
+    [setOnBlockListeners]);
 
     const removeOnBlockListener = useCallback(
         name => {
@@ -245,8 +257,7 @@ export const EthersContextProvider = ({ children }) => {
                 return old;
             });
         },
-        [setOnBlockListeners]
-    );
+    [setOnBlockListeners]);
 
     useEffect(() => {
         if (provider && chainId === 1) {
@@ -260,7 +271,7 @@ export const EthersContextProvider = ({ children }) => {
                 provider.off("block", onBlock);
             };
         }
-    }, [provider, chainId, onBlockListeners]);
+    }, [provider, chainIdProp, onBlockListeners]);
 
     return (
         <EthersContext.Provider
@@ -270,15 +281,9 @@ export const EthersContextProvider = ({ children }) => {
                 provider,
                 signer,
                 kovanSigner,
-                chainId,
+                chainId:chainIdProp,
                 address,
                 ensName,
-                tokens,
-                updateTokens,
-                loadingTokens,
-                customTokens,
-                addCustomToken,
-                removeCustomToken,
                 approveToken,
                 getTokenAllowance,
                 getTokenBalance,
