@@ -35,7 +35,7 @@ interface StakeRecordItemProps {
 const SHTMiningScreen = () => {
     const t = useTranslation();
     const state = useMiningState();
-    const { loadingTokens } = useContext(EthersContext);
+    const { } = useContext(EthersContext);
     const loading = state.loadingTotalMined;
     const totalValue = state.totalMinedBTC;
     return (
@@ -74,7 +74,7 @@ const Mining = ({ state }: { state: MiningState }) => {
 
 const BtcStillInPool = ({ state }: { state: MiningState }) => {
     const t = useTranslation();
-    const { loadingTokens, tokens } = useContext(EthersContext);
+    const {} = useContext(EthersContext);
     const amount = state.btcInpool;
     const loading = state.loadingBTCInpool;
     return (

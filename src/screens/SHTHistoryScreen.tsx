@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useContext, useMemo } from "react";
 import { FlatList, Platform, View } from "react-native";
 
 import moment from "moment";
@@ -11,7 +11,9 @@ import ErrorMessage from "../components/ErrorMessage";
 import Expandable from "../components/Expandable";
 import FlexView from "../components/FlexView";
 import InfoBox from "../components/InfoBox";
+import Heading from "../components/Heading";
 import { ITEM_SEPARATOR_HEIGHT } from "../components/ItemSeparator";
+import { EthersContext } from "../context/EthersContext";
 import Loading from "../components/Loading";
 import Meta from "../components/Meta";
 import Selectable from "../components/Selectable";
@@ -29,219 +31,257 @@ import useMyLimitOrdersState, { MyLimitOrdersState } from "../hooks/useMyLimitOr
 import { Order } from "../hooks/useSettlement";
 import useTranslation from "../hooks/useTranslation";
 import MetamaskError from "../types/MetamaskError";
-import { formatBalance } from "../utils";
 import Screen from "./Screen";
+import useHistoryState, { DailyRecord, HistoryState } from "../hooks/useHistoryState";
+import { BigNumber, FixedNumber } from "ethers";
+import TokenInput from "../components/TokenInput";
+import Border from "../components/Border";
+import {calculateDailyReward} from "../utils";
+import { formatUSD,formatBalance, formatTimeKey2 } from "../utils";
+interface DailyRecordProp{
+    record:DailyRecord;
+
+}
 
 const SHTHistoryScreen = () => {
     const t = useTranslation();
+    const state = useHistoryState();
     return (
         <Screen>
             <Container>
                 <BackgroundImage />
                 <Content>
-                    <Title text={t("pool-history")} />
+                    <Title text={t("farm-stats")} />
                     <Text light={true}>{t("pool-history-desc")}</Text>
-                    <MyLimitOrders />
+                    <StatInfo state={state}/>                    
+                    <EstimateAmountInput state={state}/>
+                    {/* <Border style={{marginBottom:0}}/> */}
+                    <RewardRecords />
                 </Content>
                 {Platform.OS === "web" && <WebFooter />}
             </Container>
-            <SwapSubMenu />
         </Screen>
     );
 };
 
-const MyLimitOrders = () => {
-    const state = useMyLimitOrdersState();
+const StatInfo = ({state}:{state:HistoryState})=>{
+    const t = useTranslation();
+    const disabled = false;
+    const expiry = false;
+    
+    const totalValue = state.totalMinedBTC;
+    const loading = state.loadingTotalMined;
+    const totalStoken = state.totalStokenSupply;
+    const totalStokenRemainLocked = state.totalStokenLocked;
+    const totalStaked = state.totalStakedBTCST;
+    const btcInpool = state.btcInpool;
+    const loadingDaily = state.loadingMiningStatList ||state.loadingTotalStaked;
+
+    // console.log("setLoadingMiningStatList"+loadingDaily);
+    // console.log(formatBalance(totalStaked.div(BigNumber.from(10)),18,8));
+
+    const dailyEstimated = loadingDaily||totalStaked==undefined?undefined:
+            FixedNumber.fromString(formatBalance(totalStaked.div(BigNumber.from(10)),18,8)+"")
+                .mulUnsafe(FixedNumber.from(state.dayMiningList[0].eachHaveCoin));
+    let dailyEstimatedUSD ;  
+    let dailyBTCNetreward;          
+    if (dailyEstimated!=undefined){
+        
+        const hashrate = FixedNumber.fromString(formatBalance(totalStaked.div(BigNumber.from(10)),18,8)+"");
+        const dailyBtcPerHash = FixedNumber.from(state.dayMiningList[0].eachHaveCoin);
+        const price = FixedNumber.from(state.dayMiningList[0].price);
+        console.log("calculate netreward using pric:"+price+" daily btc per TH:"+dailyBtcPerHash);
+        let {btc ,usd} = calculateDailyReward(hashrate,dailyBtcPerHash,price);
+        dailyBTCNetreward= btc;
+        dailyEstimatedUSD= usd;
+    }
+    return(
+        <InfoBox>
+            <Title text={t("total-mined")} style={{ flex: 1,fontSize:28 ,textAlign:"center"}} />
+            <Title
+                text={loading ||totalValue==undefined ? t("fetching") : formatBalance(totalValue,18,8)}
+                fontWeight={"light"}
+                disabled={loading}
+                style={{ fontSize: IS_DESKTOP ? 32 : 24,textAlign:"center"}}
+            />
+            <Meta 
+                label={t("total-btc-still-in-pool")} 
+                text={state.loadingBTCInpool ||totalStoken==undefined ? t("fetching") : formatBalance(btcInpool,18,8)}
+                suffix={""}
+                disabled={state.loadingBTCInpool} />
+
+            <Meta 
+                label={t("stoken-total-supply")} 
+                text={state.loadingTotalStokenSupply ||totalStoken==undefined ? t("fetching") : formatBalance(totalStoken,18,8)}
+                suffix={""}
+                disabled={state.loadingTotalStokenSupply} />
+            <Meta 
+                label={t("stoken-total-locked")} 
+                text={state.loadingTotalStokenLocked ||totalStoken==undefined ? t("fetching") : formatBalance(totalStokenRemainLocked,18,8)}
+                suffix={""}
+                disabled={state.loadingTotalStokenLocked} />    
+            <Meta
+                label={t("total-staked-btcst")}
+                text={state.loadingTotalStaked ||totalStaked==undefined ? t("fetching") : formatBalance(totalStaked,18,8)}
+                suffix={state.loadingTotalStaked ||totalStaked==undefined ? "" : "="+formatBalance(totalStaked.div(BigNumber.from(10)),18,8)+" TH/s"}
+                disabled={state.loadingTotalStaked}
+            />
+            <Meta
+                label={t("current-eta-daily-reward")}
+                text={loadingDaily ||dailyBTCNetreward==undefined ? t("fetching") : dailyBTCNetreward+" BTC"}
+                suffix={loadingDaily ||dailyEstimatedUSD==undefined ? t("fetching") : " ≈ "+"$ "+dailyEstimatedUSD}
+                disabled={loadingDaily}
+            />
+        </InfoBox>
+    );
+};
+
+const EstimateAmountInput = ({ state }: { state: HistoryState }) => {
+    const t = useTranslation();
+    const disabled = (state.amount==undefined || state.amount=="" || FixedNumber.from(state.amount).isZero() 
+    || state.loadingMiningStatList);
+    let dailyEstimatedUSD ;  
+    let dailyBTCNetreward; 
+    if (!disabled){
+        const hashrate = FixedNumber.fromString(state.amount).divUnsafe(FixedNumber.from(10));
+        const dailyBtcPerHash = FixedNumber.from(state.dayMiningList[0].eachHaveCoin);
+        const price = FixedNumber.from(state.dayMiningList[0].price);
+        let {btc ,usd} = calculateDailyReward(hashrate,dailyBtcPerHash,price);
+        dailyBTCNetreward= btc;
+        dailyEstimatedUSD= usd;
+    }
+    
     return (
-        <View style={{ marginTop: Spacing.large }}>
-            <OrderSelect state={state} />
-            <OrderInfo state={state} />
+        <View style={{marginTop:Spacing.large}}>
+            <Heading text={t("stake-amount-to-estimates")} style={{marginBottom:0}} />
+            <Text light={true} style={{marginTop:0,marginBottom:Spacing.tiny}}>{t("estimate-desc")}</Text>
+            <TokenInput
+                token={state.stoken}
+                amount={state.amount}
+                onAmountChanged={state.setAmount}
+                autoFocus={IS_DESKTOP}
+            />
+            <InfoBox style={{marginTop:Spacing.tiny}}>
+                <Meta 
+                    label={t("estimated-reward-in-btc")} 
+                    text={disabled?t("n/a"):dailyBTCNetreward}
+                    suffix={"BTC"}
+                    disabled={disabled} />
+                <Meta
+                    label={t("estimated-reward-in-usd")}
+                    text={disabled?t("n/a"):dailyEstimatedUSD}
+                    suffix={"USD"}
+                    disabled={disabled}
+                />
+            </InfoBox>
         </View>
     );
 };
 
-const OrderSelect = (props: { state: MyLimitOrdersState }) => {
+const RewardRecords = () => {
+    const state = useHistoryState();
     const t = useTranslation();
     return (
-        <View>
+        <View style={{ marginTop: Spacing.large }}>
             <Expandable
                 title={t("pool-daily-mined-history")}
-                expanded={!props.state.selectedOrder}
-                onExpand={() => props.state.setSelectedOrder()}>
-                <OrderList state={props.state} />
+                expanded={true}
+                onExpand={()=>{}}>
+                <RecordList loadingDailyRecord={state.loadingDailyRecord} 
+                records={state.records}
+                recordItem={RecordItem}
+            />
             </Expandable>
-            {props.state.selectedOrder && (
-                <OrderItem
-                    order={props.state.selectedOrder}
-                    selected={true}
-                    onSelectOrder={() => props.state.setSelectedOrder()}
-                />
-            )}
+            
+            {/* <OrderInfo state={state} /> */}
         </View>
     );
 };
 
-const OrderList = ({ state }: { state: MyLimitOrdersState }) => {
-    const renderItem = useCallback(
-        ({ item }) => {
-            return (
-                <OrderItem key={item.address} order={item} selected={false} onSelectOrder={state.setSelectedOrder} />
-            );
-        },
-        [state.setSelectedOrder]
+const RecordList = (props: {
+    loadingDailyRecord: boolean;
+    records?: DailyRecord[];
+    recordItem: FC<DailyRecordProp>;
+}) => {
+    const t = useTranslation();
+    const renderItem = useCallback(({ item }) => {
+        return <props.recordItem key={item.timeKey} record={item} />;
+    }, []);
+    const data = useMemo(
+        () =>(props.records || [])
+                // @ts-ignore
+                .sort((t1, t2) => (t2.timeKey || 0) - (t1.timeKey || 0)),
+        [props.records]
     );
-    return state.loading || !state.myOrders ? (
+    return props.loadingDailyRecord || !props.records ? (
         <Loading />
-    ) : state.myOrders.length === 0 ? (
+    ) : data.length === 0 ? (
         <EmptyList />
     ) : (
-        <FlatList data={state.myOrders} renderItem={renderItem} />
+        <View>
+            <FlexView style={{ alignItems: "center", paddingHorizontal: Spacing.tiny, paddingVertical: 4 }}>
+                <View style={{flex:1,alignItems:"flex-start"}}>
+                    <Text caption={true} numberOfLines={1} fontWeight={"light"}>
+                        {t("deposited-rewards")}
+                    </Text>
+                </View>
+                <View>
+                    <Text caption={true} numberOfLines={1}  style={{ marginLeft: Spacing.small}}>
+                        {t("staked-btcsts")}
+                    </Text>
+                </View>
+                <View style={{ flex: 1, alignItems: "flex-end" }}>
+                    <Text caption={true} fontWeight={"light"} >
+                        {t("date")}
+                    </Text>
+                </View>
+                {/* <ExternalIcon path={"/all"} /> */}
+            </FlexView>
+            <FlatList
+                keyExtractor={item => item.timeKey.toString()}
+                data={data}
+                renderItem={renderItem}
+                ItemSeparatorComponent={() => <Border small={true} />}
+            />
+        </View>
     );
 };
-
 const EmptyList = () => {
     const t = useTranslation();
     return (
         <View style={{ margin: Spacing.normal }}>
             <Text disabled={true} style={{ textAlign: "center", width: "100%" }}>
-                {t("you-dont-have-limit-orders")}
+                {t("empty-staking-records")}
             </Text>
         </View>
     );
 };
-
-const OrderItem = (props: { order: Order; selected: boolean; onSelectOrder: (order: Order) => void }) => {
-    const t = useTranslation();
-    const { amountIn, amountOutMin, fromToken, toToken } = props.order;
-    const status = props.order.status();
-    const disabled = status !== "Open";
-    const price = Fraction.fromTokens(amountOutMin, amountIn, toToken, fromToken);
-    const onPress = useCallback(() => props.onSelectOrder(props.order), [props.onSelectOrder, props.order]);
+const RecordItem = (props: DailyRecordProp) => {
+    const record = props.record;
+    const rewardAmount = record.rewardAmount;
+    const stakedLowestWaterMark = record.stakedLowestWaterMark;
     return (
-        <Selectable
-            selected={props.selected}
-            onPress={onPress}
-            containerStyle={{
-                marginBottom: ITEM_SEPARATOR_HEIGHT
-            }}>
-            <FlexView style={{ alignItems: "center" }}>
-                <View>
-                    <Token token={fromToken} amount={amountIn} disabled={disabled} buy={false} />
-                    <View style={{ height: Spacing.tiny }} />
-                    <Token token={toToken} amount={amountOutMin} disabled={disabled} buy={true} />
-                </View>
-                <Field
-                    label={t("price")}
-                    value={props.order.canceled ? t("canceled") : price.toString(8)}
-                    disabled={disabled}
-                    minWidth={0}
-                />
-            </FlexView>
-        </Selectable>
-    );
-};
-
-const Token = ({ token, amount, disabled, buy }) => {
-    const { green, red, disabled: colorDisabled } = useColors();
-    return (
-        <FlexView style={{ alignItems: "center" }}>
-            <TokenLogo small={true} token={token} disabled={disabled} />
-            <Text
-                fontWeight={"bold"}
-                note={true}
-                style={{ color: disabled ? colorDisabled : buy ? green : red, marginLeft: Spacing.tiny }}>
-                {buy ? "﹢" : "﹣"}
-            </Text>
-            <TokenAmount token={token} amount={amount} disabled={disabled} />
-            {IS_DESKTOP && <TokenSymbol token={token} disabled={disabled} />}
+        <FlexView style={{ alignItems: "center", paddingHorizontal: Spacing.tiny, paddingVertical: 4 }}>
+            <View style={{flex:1,alignItems:"flex-start"}}>
+                <Text caption={true} numberOfLines={1} fontWeight={"light"}
+                    disabled={false}>
+                    {rewardAmount.gt(BigNumber.from(0)) ? formatBalance(rewardAmount || 0): "N/A"}
+                </Text>
+            </View>
+            <View>
+                <Text caption={true} numberOfLines={1}  
+                    style={{ marginLeft: Spacing.small}}
+                    disabled={false}>
+                    {stakedLowestWaterMark.gt(BigNumber.from(0)) ? formatBalance(stakedLowestWaterMark || 0): "N/A"}
+                </Text>
+            </View>
+            <View style={{ flex: 1, alignItems: "flex-end" }}>
+                <Text caption={true} fontWeight={"light"} disabled={false}>
+                    {formatTimeKey2(record.timeKey)}
+                </Text>
+            </View>
+            {/* <ExternalIcon path={"/slot/" + record.timeKey} /> */}
         </FlexView>
     );
 };
-
-const Field = ({ label, value, disabled, minWidth }) => {
-    const { textMedium, textLight, disabled: colorDisabled } = useColors();
-    return (
-        <View style={{ flex: minWidth ? 0 : 1, minWidth, marginLeft: Spacing.tiny }}>
-            <Text note={true} style={{ textAlign: "right", color: disabled ? colorDisabled : textLight }}>
-                {label}
-            </Text>
-            <Text
-                caption={true}
-                light={true}
-                style={{ textAlign: "right", color: disabled ? colorDisabled : textMedium }}>
-                {value}
-            </Text>
-        </View>
-    );
-};
-
-const OrderInfo = ({ state }: { state: MyLimitOrdersState }) => {
-    const t = useTranslation();
-    const order = state.selectedOrder;
-    const amountIn = order ? formatBalance(order.amountIn, order.fromToken.decimals) : undefined;
-    const amountOutMin = order ? formatBalance(order.amountOutMin, order.toToken.decimals) : undefined;
-    const filledAmountIn = order ? formatBalance(order.filledAmountIn!, order.fromToken.decimals) : undefined;
-    const expiry = useMemo(() => {
-        if (order) {
-            const deadline = new Date(order.deadline.toNumber() * 1000);
-            const now = Date.now();
-            const diff = moment(deadline).diff(now);
-            return moment(deadline).isAfter(now) ? moment.utc(diff).format("HH[h] mm[m]") : null;
-        }
-    }, [order]);
-    const disabled = !state.selectedOrder;
-    return (
-        <InfoBox>
-            <Meta label={t("day-btc-total-reward")} text={order?.status()} disabled={disabled} />
-            <Meta
-                label={t("day-new-staked-users")}
-                text={filledAmountIn}
-                suffix={order?.fromToken?.symbol}
-                disabled={disabled}
-            />
-            <Meta label={t("day-total-eligible-btcsts")} text={amountIn} suffix={order?.fromToken?.symbol} disabled={disabled} />
-            <Meta label={t("accumulate-mined-btc")} text={amountOutMin} suffix={order?.toToken?.symbol} disabled={disabled} />
-            {expiry && <Meta label={t("day-lwm")} text={expiry} disabled={disabled} />}
-            <FilledEvents state={state} />
-            <Controls state={state} />
-        </InfoBox>
-    );
-};
-
-const FilledEvents = ({ state }: { state: MyLimitOrdersState }) => {
-    const t = useTranslation();
-    const prefix = "https://etherscan.io/tx/";
-    return (
-        <View>
-            {state.filledEvents &&
-                state.filledEvents.map((event, i) => {
-                    const hash = event.transactionHash;
-                    const tx = hash.substring(0, 10) + "..." + hash.substring(hash.length - 8);
-                    return <Meta key={i} label={t("filled-tx-no") + i} text={tx} url={prefix + hash} />;
-                })}
-        </View>
-    );
-};
-
-const Controls = ({ state }: { state: MyLimitOrdersState }) => {
-    const [error, setError] = useState<MetamaskError>({});
-    useAsyncEffect(() => setError({}), [state.selectedOrder]);
-    return (
-        <View style={{ marginTop: Spacing.normal }}>
-            <CancelButton state={state} onError={setError} />
-            {error.message && error.code !== 4001 && <ErrorMessage error={error} />}
-        </View>
-    );
-};
-
-const CancelButton = ({ state, onError }: { state: MyLimitOrdersState; onError: (e) => void }) => {
-    const t = useTranslation();
-    const onPress = useCallback(() => {
-        onError({});
-        state.onCancelOrder().catch(onError);
-    }, [state.onCancelOrder, onError]);
-    const disabled = !state.selectedOrder || state.selectedOrder.status() !== "Open";
-    return <Button title={t("cancel-order")} loading={state.cancellingOrder} onPress={onPress} disabled={disabled} />;
-};
-
 export default SHTHistoryScreen;

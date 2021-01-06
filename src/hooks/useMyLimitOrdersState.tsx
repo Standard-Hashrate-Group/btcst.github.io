@@ -5,7 +5,6 @@ import useAsyncEffect from "use-async-effect";
 import { EthersContext } from "../context/EthersContext";
 import { fetchMyCanceledLimitOrderHashes, fetchMyLimitOrders } from "../utils/fetch-utils";
 import useSettlement, { Order } from "./useSettlement";
-
 export interface MyLimitOrdersState {
     lastTimeRefreshed: number;
     myOrders?: Order[];

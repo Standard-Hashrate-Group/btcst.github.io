@@ -12,7 +12,7 @@ const SocialIcons = () => {
     const onPressTwitter = useLinker("http://twitter.com/BTCST2020", "", "_blank");
     const onPressGithub = useLinker("https://github.com/Standard-Hashrate-Group", "", "_blank");
     
-    const onMedium = useLinker("https://medium.com/@btcst2020", "", "_blank");
+    const onMedium = useLinker("https://btcst.medium.com/", "", "_blank");
     // const onPressReddit = useLinker("https://www.reddit.com/user/BTCStandardHashrate", "", "_blank");
     const onTg = useLinker("https://t.me/BTCSTCommunity","","_blank");
     const onPressDiscord = useLinker("https://discord.com/channels/791170396316893255/791170396765945886", "", "_blank");

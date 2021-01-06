@@ -43,7 +43,7 @@ interface LPTokenItemProps {
 const SHTHomeScreen = () => {
     const t = useTranslation();
     const state = useHomeState();
-    const { loadingTokens } = useContext(EthersContext);
+    const { } = useContext(EthersContext);
     const loading = state.loadingTotalMined;
     const totalValue = state.totalMinedBTC;
     return (

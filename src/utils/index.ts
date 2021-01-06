@@ -7,7 +7,7 @@ import { Contract } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
-import { BigNumber } from '@ethersproject/bignumber'
+import { BigNumber, FixedNumber } from '@ethersproject/bignumber'
 
 export const formatUSD = (value: number, maxFraction = 0) => {
     const formatter = new Intl.NumberFormat("en-US", {
@@ -86,6 +86,10 @@ export const formatTimeKey = (value:ethers.BigNumber)=>{
     const date = new Date(value.toNumber() * 1000);
     return date.toLocaleDateString("zh-cn");
 };
+export const formatTimeKey2 = (value:number)=>{
+    const date = new Date(value * 1000);
+    return date.toLocaleDateString("zh-cn");
+};
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
     try {
@@ -120,5 +124,18 @@ export function getProviderOrSigner(library: Web3Provider, account?: string): We
     return account ? getSigner(library, account) : library
 }
 
+export const calculateDailyReward = (hashrate: FixedNumber,dailyBtcPerHash:FixedNumber,btcPrice:FixedNumber)=>{
+    const dailyEstimated = hashrate.mulUnsafe(dailyBtcPerHash);
+    const powerPrice = FixedNumber.from(5846).divUnsafe(FixedNumber.from(1000*1000*100))
+                    .mulUnsafe(FixedNumber.from(103)).divUnsafe(FixedNumber.from(100));
+    const powerPerHashUnitDay = FixedNumber.from(60).mulUnsafe(FixedNumber.from(24));
+    let   dailyBTCNetreward = dailyEstimated.subUnsafe(
+            powerPerHashUnitDay.mulUnsafe(powerPrice).
+                    mulUnsafe(hashrate).divUnsafe(btcPrice)
+            );
+    let  dailyEstimatedUSD = dailyBTCNetreward.mulUnsafe(btcPrice).round(6);
+    dailyBTCNetreward = dailyBTCNetreward.round(6);
+    return {btc:dailyBTCNetreward,usd:dailyEstimatedUSD};
+}
 
 export { getContract };

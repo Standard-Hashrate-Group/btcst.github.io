@@ -5,8 +5,8 @@ import { Image } from "react-native";
 function SvgLogoDark(props) {
     return (
         <Image
-            source={require("../../../assets/logo-h-dark.png")}
-            style={{ width: 232, height: 40 }}
+            source={require("../../../assets/logo-h-dark.svg")}
+            style={{ width: 260, height: 64 }}
         />
     );
 }

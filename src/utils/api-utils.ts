@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 
 import Fraction from "../constants/Fraction";
 import { ETH } from "../constants/tokens";
-import { ALCHEMY_PROVIDER } from "../context/EthersContext";
 import { Order, OrderStatus } from "../hooks/useSettlement";
 import LPToken from "../types/LPToken";
 import Token from "../types/Token";
@@ -45,6 +44,11 @@ export const viewTotalRewardInPoolFrom = async(account: string,provider: ethers.
 export const totalSupplyOfSToken = async(provider: ethers.providers.JsonRpcProvider)=>{
     const contract = getContract("IBEP20",BTCST,provider);
     const value = await contract.totalSupply();
+    return value;
+};
+export const getTotalRemainingSupplyLocked = async(provider: ethers.providers.JsonRpcProvider)=>{
+    const contract = getContract("ISTokenERC20",BTCST,provider);
+    const value = await contract.getTotalRemainingSupplyLocked();
     return value;
 };
 
@@ -118,4 +122,44 @@ export const apiClaimAmountOfReward = async(account: string,amount: ethers.BigNu
         gasLimit: gasLimit.mul(120).div(100)
     });
     return logTransaction(tx, "farmActions.apiClaimAmountOfReward()", amount.toString());
+};
+
+
+export const fetchBtcMiningStat = async ()=>{
+    // const response = await fetch("https://pool.binance.cc/mining-api/v1/public/pool/price/priceKline?algoId=1");
+    const response = await fetch("https://584xqc7ik2.execute-api.us-east-2.amazonaws.com/beta/bp-relay");
+    
+    const json = await response.json();
+    if (json.code != 0){
+        return {code:json.code,msg:json.msg};
+    }
+    const dayList = json.data.dayList;
+    const hourList = json.data.hourList;
+    return {code:0,dayList:dayList,hourList:hourList};
+}
+
+export const viewRoundSlot = async(timeKey: number,provider: ethers.providers.JsonRpcProvider)=>{
+    const contract = getContract("IMiningFarm",BTCSTFarm,provider);
+    const value = await contract.viewRoundSlot(timeKey);
+    return value;
+};
+
+export const viewFarmBasicInfo = async(provider: ethers.providers.JsonRpcProvider)=>{
+    const contract = getContract("IMiningFarm",BTCSTFarm,provider);
+    console.log(contract);
+    const data = await Promise.all(
+        ["_farmStartedTime", "_miniStakePeriodInSeconds", "_farmDescription"].map(field => {
+            try {
+                return contract.callStatic[field]();
+            } catch (e) {
+                console.log(e);
+                return "";
+            }
+        })
+    );
+    return {
+        started: data[0],
+        stakePeriod: data[1],
+        desc: data[2]
+    };
 };

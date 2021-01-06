@@ -6,7 +6,8 @@
     "do-you-want-to-disconnect": "您希望断开连接吗?",
     "history": "历史",
     "about": "关于",
-    "mining": "挖矿"
+    "mining": "挖矿",
+    "stats":"统计"
   },
   "in-pool": "可提.",
   "you-have": "您有",
@@ -44,12 +45,12 @@
   "hardware-wallet-desc": "You need to first approve LP tokens and then migrate it.",
   "wallet-type": "Wallet Type",
   "pool-history": "Pool history",
-  "pool-daily-mined-history": "Pool's daily mined history",
+  "pool-daily-mined-history": "历史",
   "day-btc-total-reward": "当日 BTC 总收益",
   "day-new-staked-users": "Day number of who staked",
   "day-total-eligible-btcsts": "Day total eligible BTCSTs(LWM)",
   "accumulate-mined-btc": "全合约 BTC 总余额",
-  "pool-history-desc": "These are our pool's mining power reward history",
+  "pool-history-desc": "关键统计和历史数据",
   "total-btc-still-in-pool": "全合约 BTC 总余额",
   "stake": "质押",
   "about": "关于",
@@ -90,5 +91,16 @@
   "install-metamask":"安装 Metamask",
   "install-binance-chain-wallet":"安装币安智能链钱包",
   "copy-url-to-open-in-your-wallet-dapp-broswer":"点击复制链接,在您的钱包浏览器中打开",
-  "your-daily-reward":"您的每日BTC收益"
+  "your-daily-reward":"您的每日BTC收益",
+  "farm-stats":"统计",
+  "stoken-total-supply":"BTCSTs 发行总量",
+  "stoken-total-locked":"未解锁的 BTCSTs ",
+  "current-eta-daily-reward":"今日预计收益",
+  "estimates":"估算",
+  "stake-amount-to-estimates":"收益估算器",
+  "estimate-desc":"输入锁仓数以预估今日收益",
+  "estimated-reward-in-btc":"预估本日 BTC 收益",
+  "estimated-reward-in-usd":"预估本日美金收益",
+  "deposited-rewards":"当日收益",
+  "staked-btcsts":"当日质押数"
 }

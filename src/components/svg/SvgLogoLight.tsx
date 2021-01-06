@@ -5,8 +5,8 @@ import { Image } from "react-native";
 function SvgLogoLight(props) {
     return (
         <Image
-            source={require("../../../assets/logo-h.png")}
-            style={{ width: 232, height: 40 }}
+            source={require("../../../assets/logo-h.svg")}
+            style={{ width: 260, height: 64 ,marginTop:6}}
         />
     );
 }

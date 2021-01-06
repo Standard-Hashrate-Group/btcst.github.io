@@ -28,7 +28,7 @@ export interface MiningState {
 
 // tslint:disable-next-line:max-func-body-length
 const useMiningState = () => {
-    const { provider, signer, address, tokens } = useContext(EthersContext);
+    const { provider, signer, address } = useContext(EthersContext);
 
     const [totalMinedBTC,setTotalMinedBTC] = useState<ethers.BigNumber>();
     const [loadingTotalMined,setLoadingTotalMined] = useState(true);

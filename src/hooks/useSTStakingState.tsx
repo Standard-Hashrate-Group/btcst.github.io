@@ -40,7 +40,7 @@ export interface StakingState {
 
 // tslint:disable-next-line:max-func-body-length
 const useSTStakingState = () => {
-    const { provider,signer, address, getTokenAllowance, tokens, updateTokens } = useContext(EthersContext);
+    const { provider,signer, address, getTokenAllowance} = useContext(EthersContext);
 
     const [amount, setAmount] = useState("");
     const { enter, leave } = stakeActions();

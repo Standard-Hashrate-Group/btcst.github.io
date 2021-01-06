@@ -60,7 +60,7 @@ export const Title = () => {
     return (
         <View style={{ alignSelf: "center" }}>
             <Link to={"/"} style={{ textDecoration: "none" }}>
-                <SvgLogo width={259} height={45} style={{ marginTop: 8, marginLeft: -16 }} />
+                <SvgLogo width={232} height={40} style={{ marginTop: 8, marginLeft: -16 }} />
             </Link>
         </View>
     );
@@ -78,7 +78,7 @@ const Menu = () => {
             <MenuItem title={t("menu.home")} path={"/"} />
             <MenuItem title={t("menu.stake")} path={"/staking"} />
             <MenuItem title={t("menu.mining")} path={"/mining"} />
-            {/* <MenuItem title={t("menu.history")} path={"/history"} /> */}
+            <MenuItem title={t("menu.stats")} path={"/history"} />
             <MenuItem title={t("menu.about")} path={"/about"}/>
             <DarkModeSwitch style={{ marginLeft: Spacing.small }} />
             <Status />

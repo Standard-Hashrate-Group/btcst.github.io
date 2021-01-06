@@ -7,7 +7,8 @@
     "do-you-want-to-disconnect": "Do you want to disconnect?",
     "history":"History",
     "about":"About",
-    "mining":"Mining"
+    "mining":"Mining",
+    "stats":"Stats"
   },
   "in-pool" : "claimable.",
   "you-have":"You have",
@@ -46,12 +47,12 @@
   "hardware-wallet-desc": "You need to first approve LP tokens and then migrate it.",
   "wallet-type": "Wallet Type",
   "pool-history":"Pool history",
-  "pool-daily-mined-history":"Pool's daily mined history",
+  "pool-daily-mined-history":"History",
   "day-btc-total-reward":"Day BTC total reward",
   "day-new-staked-users":"Day number of who staked",
   "day-total-eligible-btcsts":"Day total eligible BTCSTs(LWM)",
   "accumulate-mined-btc":"Accumulated mined BTCs",
-  "pool-history-desc":"These are our pool's mining power reward history",
+  "pool-history-desc":"Key stats and history",
   "total-btc-still-in-pool":"Aggregate BTCs Claimable",
   "stake": "Stake",
   "about":"About",
@@ -91,5 +92,16 @@
   "install-metamask":"Install Metamask",
   "install-binance-chain-wallet":"Install Binance Chain Wallet",
   "copy-url-to-open-in-your-wallet-dapp-broswer":"Click to copy the url, open it in your wallet broswer",
-  "your-daily-reward":"Your BTC daily reward"
+  "your-daily-reward":"Your BTC daily reward",
+  "farm-stats":"Stats",
+  "stoken-total-supply":"Total Issued BTCSTs",
+  "stoken-total-locked":"Issued but Locked BTCSTs",
+  "current-eta-daily-reward":"Estimated Rewards Today",
+  "estimates":"Estimates",
+  "stake-amount-to-estimates":"Estimated Rewards Calculator",
+  "estimate-desc":"Input a stake amount to estimate daily BTC rewards based on live mining pool data",
+  "estimated-reward-in-btc":"Estimated daily rewards in BTC",
+  "estimated-reward-in-usd":"Estimated daily rewards in USD",
+  "deposited-rewards":"Rewards",
+  "staked-btcsts":"Staked BTCSTs"
 }
