@@ -2,8 +2,8 @@
   "files": {
     "static/js/0.4e4dc46d.chunk.js": "./static/js/0.4e4dc46d.chunk.js",
     "static/js/0.4e4dc46d.chunk.js.map": "./static/js/0.4e4dc46d.chunk.js.map",
-    "app.js": "./static/js/app.657b296b.chunk.js",
-    "app.js.map": "./static/js/app.657b296b.chunk.js.map",
+    "app.js": "./static/js/app.4c21b734.chunk.js",
+    "app.js.map": "./static/js/app.4c21b734.chunk.js.map",
     "runtime~app.js": "./static/js/runtime~app.38bf68bc.js",
     "runtime~app.js.map": "./static/js/runtime~app.38bf68bc.js.map",
     "static/js/3.bf3030e4.chunk.js": "./static/js/3.bf3030e4.chunk.js",
@@ -46,6 +46,7 @@
     "fonts/OpenSans_800ExtraBold.ttf": "././fonts/OpenSans_800ExtraBold.ttf",
     "fonts/OpenSans_800ExtraBold_Italic.ttf": "././fonts/OpenSans_800ExtraBold_Italic.ttf",
     "fonts/SimpleLineIcons.ttf": "././fonts/SimpleLineIcons.ttf",
+    ".DS_Store": "./.DS_Store",
     "favicon.png": "./favicon.png",
     "images/tokens/AMPL.png": "./images/tokens/AMPL.png",
     "images/tokens/BAND.png": "./images/tokens/BAND.png",
@@ -83,17 +84,17 @@
     "static/media/cn.png": "./static/media/cn.baedda5d.png",
     "static/media/empty-token.png": "./static/media/empty-token.e8aa64c5.png",
     "static/media/heart.png": "./static/media/heart.23b5c2c0.png",
-    "static/media/icon.png": "./static/media/icon.1e9d2106.png",
+    "static/media/icon.png": "./static/media/icon.a8e44fe0.png",
     "static/media/kr.png": "./static/media/kr.146730ea.png",
-    "static/media/logo-h-dark.png": "./static/media/logo-h-dark.7ffacc4a.png",
-    "static/media/logo-h.png": "./static/media/logo-h.0a3f9bb7.png",
+    "static/media/logo-h-dark.svg": "./static/media/logo-h-dark.41d79588.svg",
+    "static/media/logo-h.svg": "./static/media/logo-h.9517c117.svg",
     "static/media/metamask-dark.png": "./static/media/metamask-dark.2137a831.png",
     "static/media/metamask-icon.png": "./static/media/metamask-icon.02e3ec27.png",
     "static/media/metamask.png": "./static/media/metamask.15e22fef.png",
     "static/media/rocket.png": "./static/media/rocket.d2f3bf41.png",
     "static/media/splash.png": "./static/media/splash.8463f3d1.png",
-    "static/media/standardHashrate-dark.png": "./static/media/standardHashrate-dark.f92e4fee.png",
-    "static/media/standardHashrate.png": "./static/media/standardHashrate.182fbf24.png",
+    "static/media/standardHashrate-dark.png": "./static/media/standardHashrate-dark.a8e44fe0.png",
+    "static/media/standardHashrate.png": "./static/media/standardHashrate.adcbb68f.png",
     "static/media/star.png": "./static/media/star.69c71386.png",
     "static/media/sun.png": "./static/media/sun.3cf66943.png",
     "static/media/uk.png": "./static/media/uk.934852d7.png",
@@ -105,6 +106,6 @@
   "entrypoints": [
     "static/js/runtime~app.38bf68bc.js",
     "static/js/3.bf3030e4.chunk.js",
-    "static/js/app.657b296b.chunk.js"
+    "static/js/app.4c21b734.chunk.js"
   ]
 }
