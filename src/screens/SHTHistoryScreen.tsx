@@ -42,6 +42,7 @@ interface DailyRecordProp{
     record:DailyRecord;
 
 }
+const DISTRIBUTE_LINE = "0.6";
 
 const SHTHistoryScreen = () => {
     const t = useTranslation();
@@ -84,16 +85,35 @@ const StatInfo = ({state}:{state:HistoryState})=>{
             FixedNumber.fromString(formatBalance(totalStaked.div(BigNumber.from(10)),18,8)+"")
                 .mulUnsafe(FixedNumber.from(state.dayMiningList[0].eachHaveCoin));
     let dailyEstimatedUSD ;  
-    let dailyBTCNetreward;          
-    if (dailyEstimated!=undefined){
-        
-        const hashrate = FixedNumber.fromString(formatBalance(totalStaked.div(BigNumber.from(10)),18,8)+"");
+    let dailyBTCNetreward;  
+    let dailyBTCNetrewardPerStaked;
+    let dailyUSDRewardPerStaked;
+    let boostTimes;
+    if (dailyEstimated!=undefined && totalStoken!=undefined && totalStaked!=undefined){
+        let aboveLine = true;
+        let preHash = FixedNumber.fromString(formatBalance(totalStaked.div(BigNumber.from(10)),18,8)+"");
+        let hashrate = preHash;
+        let compare = FixedNumber.from(totalStaked);
+        let rate = compare.divUnsafe(FixedNumber.from(totalStoken))
+                .subUnsafe(FixedNumber.from(DISTRIBUTE_LINE));
+        boostTimes = FixedNumber.from("1.0");        
+        if (rate.toUnsafeFloat()<0){
+            hashrate = FixedNumber.from(DISTRIBUTE_LINE).mulUnsafe(
+                FixedNumber.fromString(formatBalance(totalStoken.div(BigNumber.from(10)),18,8)+"")
+            );
+            aboveLine = false;
+            boostTimes = hashrate.divUnsafe(preHash);
+        }
+
         const dailyBtcPerHash = FixedNumber.from(state.dayMiningList[0].eachHaveCoin);
         const price = FixedNumber.from(state.dayMiningList[0].price);
-        console.log("calculate netreward using pric:"+price+" daily btc per TH:"+dailyBtcPerHash);
+        console.log("calculate netreward using pric:"+price+" daily btc per TH:"+dailyBtcPerHash+" hashrate:"+hashrate);
         let {btc ,usd} = calculateDailyReward(hashrate,dailyBtcPerHash,price);
         dailyBTCNetreward= btc;
         dailyEstimatedUSD= usd;
+
+        dailyBTCNetrewardPerStaked = dailyBTCNetreward.divUnsafe(preHash).divUnsafe(FixedNumber.from(10));
+        dailyUSDRewardPerStaked = dailyEstimatedUSD.divUnsafe(preHash).divUnsafe(FixedNumber.from(10));
     }
     return(
         <InfoBox>
@@ -128,27 +148,74 @@ const StatInfo = ({state}:{state:HistoryState})=>{
             />
             <Meta
                 label={t("current-eta-daily-reward")}
-                text={loadingDaily ||dailyBTCNetreward==undefined ? t("fetching") : dailyBTCNetreward+" BTC"}
-                suffix={loadingDaily ||dailyEstimatedUSD==undefined ? t("fetching") : " ≈ "+"$ "+dailyEstimatedUSD}
+                text={loadingDaily ||dailyBTCNetreward==undefined ? t("fetching") : formatBalance(dailyBTCNetreward,18,8)+" BTC"}
+                suffix={loadingDaily ||dailyEstimatedUSD==undefined ? t("fetching") : " ≈ "+"$ "+formatBalance(dailyEstimatedUSD,18,2)}
                 disabled={loadingDaily}
             />
+            <Meta
+                label={t("current-eta-daily-boost")}
+                text={loadingDaily ||boostTimes==undefined ? t("fetching") : formatBalance(boostTimes,18,2)+" X"}
+                suffix={""}
+                disabled={loadingDaily}
+            />
+            <Meta
+                label={t("current-eta-daily-reward-per-token-btc")}
+                text={loadingDaily ||dailyBTCNetrewardPerStaked==undefined ? t("fetching") : formatBalance(dailyBTCNetrewardPerStaked,18,8)+" BTC"}
+                suffix={""}
+                disabled={loadingDaily}
+            />
+            <Meta
+                label={t("current-eta-daily-reward-per-token-usd")}
+                text={loadingDaily ||dailyUSDRewardPerStaked==undefined ? t("fetching") : "$ "+formatBalance(dailyUSDRewardPerStaked,18,4)}
+                suffix={""}
+                disabled={loadingDaily}
+            />
+            
         </InfoBox>
     );
 };
 
 const EstimateAmountInput = ({ state }: { state: HistoryState }) => {
     const t = useTranslation();
+    const totalStoken = state.totalStokenSupply;
+    const totalStaked = state.totalStakedBTCST;
     const disabled = (state.amount==undefined || state.amount=="" || FixedNumber.from(state.amount).isZero() 
     || state.loadingMiningStatList);
     let dailyEstimatedUSD ;  
     let dailyBTCNetreward; 
-    if (!disabled){
-        const hashrate = FixedNumber.fromString(state.amount).divUnsafe(FixedNumber.from(10));
+    let dailyBTCNetrewardPerStaked;
+    let dailyUSDRewardPerStaked;
+    let boostTimes;
+    if (!disabled && totalStoken!=undefined && totalStaked!=undefined){
+        let hashrate = FixedNumber.fromString(state.amount).divUnsafe(FixedNumber.from(10));
+        let aboveLine = true;
+        let compare = FixedNumber.from(formatBalance(totalStaked,18,8)+"").addUnsafe(FixedNumber.from(state.amount));
+        let rate = compare.divUnsafe(FixedNumber.from( formatBalance(totalStoken,18,8)+"")
+                ).subUnsafe(FixedNumber.from(DISTRIBUTE_LINE));
+        boostTimes = FixedNumber.from("1.0");
+        if (rate.toUnsafeFloat()<0){
+            hashrate = FixedNumber.from(DISTRIBUTE_LINE).mulUnsafe(
+                FixedNumber.fromString(formatBalance(totalStoken.div(BigNumber.from(10)),18,8)+"")
+            );
+            aboveLine = false;
+            console.log("compare:"+compare+" hashrate:"+hashrate);
+            boostTimes = hashrate.mulUnsafe(FixedNumber.from(10)).divUnsafe(compare);
+        }
+
         const dailyBtcPerHash = FixedNumber.from(state.dayMiningList[0].eachHaveCoin);
         const price = FixedNumber.from(state.dayMiningList[0].price);
         let {btc ,usd} = calculateDailyReward(hashrate,dailyBtcPerHash,price);
-        dailyBTCNetreward= btc;
-        dailyEstimatedUSD= usd;
+        
+        if (aboveLine){
+            dailyBTCNetreward= btc;
+            dailyEstimatedUSD= usd;
+        }else{
+            dailyBTCNetreward = btc.divUnsafe(compare)
+                .mulUnsafe(FixedNumber.from(state.amount));
+            dailyEstimatedUSD = usd.divUnsafe(compare)
+                .mulUnsafe(FixedNumber.from(state.amount));
+        }
+        
     }
     
     return (
@@ -164,13 +231,19 @@ const EstimateAmountInput = ({ state }: { state: HistoryState }) => {
             <InfoBox style={{marginTop:Spacing.tiny}}>
                 <Meta 
                     label={t("estimated-reward-in-btc")} 
-                    text={disabled?t("n/a"):dailyBTCNetreward}
+                    text={disabled?t("n/a"):formatBalance(dailyBTCNetreward,18,8)}
                     suffix={"BTC"}
                     disabled={disabled} />
                 <Meta
                     label={t("estimated-reward-in-usd")}
-                    text={disabled?t("n/a"):dailyEstimatedUSD}
+                    text={disabled?t("n/a"):formatBalance(dailyEstimatedUSD,18,2)}
                     suffix={"USD"}
+                    disabled={disabled}
+                />
+                <Meta
+                    label={t("estimated-boost-times")}
+                    text={disabled?t("n/a"):formatBalance(boostTimes,18,2)}
+                    suffix={"X"}
                     disabled={disabled}
                 />
             </InfoBox>

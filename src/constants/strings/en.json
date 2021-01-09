@@ -103,5 +103,9 @@
   "estimated-reward-in-btc":"Estimated daily rewards in BTC",
   "estimated-reward-in-usd":"Estimated daily rewards in USD",
   "deposited-rewards":"Rewards",
-  "staked-btcsts":"Staked BTCSTs"
+  "staked-btcsts":"Staked BTCSTs",
+  "current-eta-daily-reward-per-token-btc":"Reward (BTC) per Token with Boost",
+  "current-eta-daily-reward-per-token-usd":"Reward (USD) per Token with Boost",
+  "current-eta-daily-boost":"Boost Factor",
+  "estimated-boost-times":"Estimated Boost Factor"
 }
