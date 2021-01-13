@@ -142,8 +142,8 @@ const StatInfo = ({state}:{state:HistoryState})=>{
                 disabled={state.loadingTotalStokenLocked} />    
             <Meta
                 label={t("total-staked-btcst")}
-                text={state.loadingTotalStaked ||totalStaked==undefined ? t("fetching") : formatBalance(totalStaked,18,8)}
-                suffix={state.loadingTotalStaked ||totalStaked==undefined ? "" : "="+formatBalance(totalStaked.div(BigNumber.from(10)),18,8)+" TH/s"}
+                text={state.loadingTotalStaked ||totalStaked==undefined ? t("fetching") : formatBalance(totalStaked,18,2)}
+                suffix={state.loadingTotalStaked ||totalStaked==undefined ? "" : "="+formatBalance(totalStaked.div(BigNumber.from(10)),18,2)+" TH/s"}
                 disabled={state.loadingTotalStaked}
             />
             <Meta
@@ -345,7 +345,7 @@ const RecordItem = (props: DailyRecordProp) => {
                 <Text caption={true} numberOfLines={1}  
                     style={{ marginLeft: Spacing.small}}
                     disabled={false}>
-                    {stakedLowestWaterMark.gt(BigNumber.from(0)) ? formatBalance(stakedLowestWaterMark || 0): "N/A"}
+                    {stakedLowestWaterMark.gt(BigNumber.from(0)) ? formatBalance(stakedLowestWaterMark || 0,18,2): "N/A"}
                 </Text>
             </View>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
