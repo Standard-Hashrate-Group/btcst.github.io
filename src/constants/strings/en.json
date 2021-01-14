@@ -91,7 +91,7 @@
   "connect-with-wallet":"Connect with wallet",
   "install-metamask":"Install Metamask",
   "install-binance-chain-wallet":"Install Binance Chain Wallet",
-  "copy-url-to-open-in-your-wallet-dapp-broswer":"Click to copy the url, open it in your wallet broswer",
+  "copy-url-to-open-in-your-wallet-dapp-broswer":"Click to copy the url, open it in your wallet browser",
   "your-daily-reward":"Your BTC daily reward",
   "farm-stats":"Stats",
   "stoken-total-supply":"Total Issued BTCSTs",
@@ -107,5 +107,7 @@
   "current-eta-daily-reward-per-token-btc":"Reward (BTC) per Token with Boost",
   "current-eta-daily-reward-per-token-usd":"Reward (USD) per Token with Boost",
   "current-eta-daily-boost":"Boost Factor",
-  "estimated-boost-times":"Estimated Boost Factor"
+  "estimated-boost-times":"Estimated Boost Factor",
+  "buy-on-binance":"Buy on Binance",
+  "buy-on-pancakeswap":"Buy on Pancake Swap"
 }

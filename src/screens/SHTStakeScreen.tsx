@@ -30,6 +30,7 @@ import { formatBalance, isEmptyValue, parseBalance } from "../utils";
 import Screen from "./Screen";
 import useColors from "../hooks/useColors";
 import { ethers } from "ethers";
+import useLinker from "../hooks/useLinker";
 
 const SHTStakeScreen = () => {
     const t = useTranslation();
@@ -54,13 +55,19 @@ const SHTStakeScreen = () => {
 const Staking = () => {
     const t = useTranslation();
     const state = useSTStakingState();
+    const onPressEx = useLinker("https://www.binance.com/cn/trade/BTCST_USDT", "", "_blank");
+    const onPressSwap = useLinker("https://exchange.pancakeswap.finance/", "", "_blank");
     return (
         <View style={{ marginTop: Spacing.large }}>
             <STokenBalance state={state} />
             <Border />
             <AmountInput state={state} />
             {state.stoken && state.yourTotalSToken?.isZero() && (
-                <Notice text={t("you-dont-have-btcst")} color={"orange"} style={{ marginTop: Spacing.small }} />
+                <View>
+                    <Notice text={t("you-dont-have-btcst")} color={"orange"} style={{ marginTop: Spacing.small }} />
+                    <Button style={{marginTop:Spacing.tiny}} title={t("buy-on-binance")} onPress={onPressEx}/>
+                    <Button style={{marginTop:Spacing.tiny}} title={t("buy-on-pancakeswap")} onPress={onPressSwap}/>
+                </View>
             )}
             <StakeInfo state={state} />
         </View>

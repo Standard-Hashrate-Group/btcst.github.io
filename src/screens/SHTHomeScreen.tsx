@@ -89,7 +89,7 @@ const TotalStaked = ({ state }: { state: HomeState }) => {
         <View>
             <Heading text={t("total-staked-btcst")} buttonText={t("stake")} onPressButton={goToSwap} />
             <Title
-                        text={loading ||staked==undefined ? t("fetching") : formatBalance(staked,18)}
+                        text={loading ||staked==undefined ? t("fetching") : formatBalance(staked,18,8)}
                         fontWeight={"light"}
                         disabled={loading}
                         style={{ fontSize: IS_DESKTOP ? 32 : 24 }}

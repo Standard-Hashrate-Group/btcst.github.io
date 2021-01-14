@@ -106,5 +106,7 @@
   "current-eta-daily-reward-per-token-btc":"增强后当日每 BTCST 收益 (BTC)",
   "current-eta-daily-reward-per-token-usd":"增强后当日每 BTCST 收益 (USD)",
   "current-eta-daily-boost":"当日收益增强指数",
-  "estimated-boost-times":"预估收益增强指数"
+  "estimated-boost-times":"预估收益增强指数",
+  "buy-on-binance":"跳转到 币安 购买",
+  "buy-on-pancakeswap":"跳转到 Pancakeswap 购买"
 }
