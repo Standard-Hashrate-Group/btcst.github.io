@@ -77,7 +77,7 @@ export const stakeActions = ()=>{
         const gasLimit = await farm.estimateGas.apiDepositToMining(amount);
         console.log(await gasLimit.toString()+" gas limit");
         const tx = await farm.apiDepositToMining(amount, {
-            gasLimit: gasLimit.mul(120).div(100)
+            gasLimit: gasLimit.mul(105).div(100)
         });
         return logTransaction(tx, "stakeActions.enter()", amount.toString());
     }, []);
@@ -88,7 +88,7 @@ export const stakeActions = ()=>{
         const gasLimit = await farm.estimateGas.apiWithdrawLatestSToken(amount);
         console.log(await gasLimit.toString()+" gas limit");
         const tx = await farm.apiWithdrawLatestSToken(amount, {
-            gasLimit: gasLimit.mul(120).div(100)
+            gasLimit: gasLimit.mul(105).div(100)
         });
         return logTransaction(tx, "stakeActions.leave()", amount.toString());
     }, []);
