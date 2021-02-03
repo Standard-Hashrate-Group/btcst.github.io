@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useMemo } from "react";
+import React, { FC, useCallback, useContext, useEffect, useMemo } from "react";
 import { FlatList, Platform, View } from "react-native";
 
 import moment from "moment";
@@ -36,8 +36,7 @@ import useHistoryState, { DailyRecord, HistoryState } from "../hooks/useHistoryS
 import { BigNumber, FixedNumber } from "ethers";
 import TokenInput from "../components/TokenInput";
 import Border from "../components/Border";
-import {calculateDailyReward} from "../utils";
-import { formatUSD,formatBalance, formatTimeKey2 } from "../utils";
+import { formatUSD, formatBalance, formatTimeKey2, formatPercentage, calculateDailyReward, formatApy } from "../utils";
 interface DailyRecordProp{
     record:DailyRecord;
 
@@ -76,7 +75,7 @@ const StatInfo = ({state}:{state:HistoryState})=>{
     const totalStokenRemainLocked = state.totalStokenLocked;
     const totalStaked = state.totalStakedBTCST;
     const btcInpool = state.btcInpool;
-    const loadingDaily = state.loadingMiningStatList ||state.loadingTotalStaked;
+    const loadingDaily = state.loadingMiningStatList ||state.loadingTotalStaked || state.getPriceLoading;
 
     // console.log("setLoadingMiningStatList"+loadingDaily);
     // console.log(formatBalance(totalStaked.div(BigNumber.from(10)),18,8));
@@ -115,62 +114,110 @@ const StatInfo = ({state}:{state:HistoryState})=>{
         dailyBTCNetrewardPerStaked = dailyBTCNetreward.divUnsafe(preHash).divUnsafe(FixedNumber.from(10));
         dailyUSDRewardPerStaked = dailyEstimatedUSD.divUnsafe(preHash).divUnsafe(FixedNumber.from(10));
     }
-    return(
+    return (
         <InfoBox>
-            <Title text={t("total-mined")} style={{ flex: 1,fontSize:28 ,textAlign:"center"}} />
+            <Title text={t("total-mined")} style={{ flex: 1, fontSize: 28, textAlign: "center" }} />
             <Title
-                text={loading ||totalValue==undefined ? t("fetching") : formatBalance(totalValue,18,8)}
+                text={loading || totalValue == undefined ? t("fetching") : formatBalance(totalValue, 18, 8)}
                 fontWeight={"light"}
                 disabled={loading}
-                style={{ fontSize: IS_DESKTOP ? 32 : 24,textAlign:"center"}}
+                style={{ fontSize: IS_DESKTOP ? 32 : 24, textAlign: "center" }}
             />
-            <Meta 
-                label={t("total-btc-still-in-pool")} 
-                text={state.loadingBTCInpool ||totalStoken==undefined ? t("fetching") : formatBalance(btcInpool,18,8)}
+            <Meta
+                label={t("total-btc-still-in-pool")}
+                text={
+                    state.loadingBTCInpool || totalStoken == undefined ? t("fetching") : formatBalance(btcInpool, 18, 8)
+                }
                 suffix={""}
-                disabled={state.loadingBTCInpool} />
+                disabled={state.loadingBTCInpool}
+            />
 
-            <Meta 
-                label={t("stoken-total-supply")} 
-                text={state.loadingTotalStokenSupply ||totalStoken==undefined ? t("fetching") : formatBalance(totalStoken,18,8)}
+            <Meta
+                label={t("stoken-total-supply")}
+                text={
+                    state.loadingTotalStokenSupply || totalStoken == undefined
+                        ? t("fetching")
+                        : formatBalance(totalStoken, 18, 8)
+                }
                 suffix={""}
-                disabled={state.loadingTotalStokenSupply} />
-            <Meta 
-                label={t("stoken-total-locked")} 
-                text={state.loadingTotalStokenLocked ||totalStoken==undefined ? t("fetching") : formatBalance(totalStokenRemainLocked,18,8)}
+                disabled={state.loadingTotalStokenSupply}
+            />
+            <Meta
+                label={t("stoken-total-locked")}
+                text={
+                    state.loadingTotalStokenLocked || totalStoken == undefined
+                        ? t("fetching")
+                        : formatBalance(totalStokenRemainLocked, 18, 8)
+                }
                 suffix={""}
-                disabled={state.loadingTotalStokenLocked} />    
+                disabled={state.loadingTotalStokenLocked}
+            />
             <Meta
                 label={t("total-staked-btcst")}
-                text={state.loadingTotalStaked ||totalStaked==undefined ? t("fetching") : formatBalance(totalStaked,18,2)}
-                suffix={state.loadingTotalStaked ||totalStaked==undefined ? "" : "="+formatBalance(totalStaked.div(BigNumber.from(10)),18,2)+" TH/s"}
+                text={
+                    state.loadingTotalStaked || totalStaked == undefined
+                        ? t("fetching")
+                        : formatBalance(totalStaked, 18, 2)
+                }
+                suffix={
+                    state.loadingTotalStaked || totalStaked == undefined
+                        ? ""
+                        : "=" + formatBalance(totalStaked.div(BigNumber.from(10)), 18, 2) + " TH/s"
+                }
                 disabled={state.loadingTotalStaked}
             />
             <Meta
                 label={t("current-eta-daily-reward")}
-                text={loadingDaily ||dailyBTCNetreward==undefined ? t("fetching") : formatBalance(dailyBTCNetreward,18,8)+" BTC"}
-                suffix={loadingDaily ||dailyEstimatedUSD==undefined ? t("fetching") : " ≈ "+"$ "+formatBalance(dailyEstimatedUSD,18,2)}
+                text={
+                    loadingDaily || dailyBTCNetreward == undefined
+                        ? t("fetching")
+                        : formatBalance(dailyBTCNetreward, 18, 8) + " BTC"
+                }
+                suffix={
+                    loadingDaily || dailyEstimatedUSD == undefined
+                        ? t("fetching")
+                        : " ≈ " + "$ " + formatBalance(dailyEstimatedUSD, 18, 2)
+                }
                 disabled={loadingDaily}
             />
             <Meta
                 label={t("current-eta-daily-boost")}
-                text={loadingDaily ||boostTimes==undefined ? t("fetching") : formatBalance(boostTimes,18,2)+" X"}
+                text={loadingDaily || boostTimes == undefined ? t("fetching") : formatBalance(boostTimes, 18, 2) + " X"}
                 suffix={""}
                 disabled={loadingDaily}
             />
             <Meta
                 label={t("current-eta-daily-reward-per-token-btc")}
-                text={loadingDaily ||dailyBTCNetrewardPerStaked==undefined ? t("fetching") : formatBalance(dailyBTCNetrewardPerStaked,18,8)+" BTC"}
+                text={
+                    loadingDaily || dailyBTCNetrewardPerStaked == undefined
+                        ? t("fetching")
+                        : formatBalance(dailyBTCNetrewardPerStaked, 18, 8) + " BTC"
+                }
                 suffix={""}
                 disabled={loadingDaily}
             />
             <Meta
                 label={t("current-eta-daily-reward-per-token-usd")}
-                text={loadingDaily ||dailyUSDRewardPerStaked==undefined ? t("fetching") : "$ "+formatBalance(dailyUSDRewardPerStaked,18,4)}
+                text={
+                    loadingDaily || dailyUSDRewardPerStaked == undefined
+                        ? t("fetching")
+                        : "$ " + formatBalance(dailyUSDRewardPerStaked, 18, 4)
+                }
                 suffix={""}
                 disabled={loadingDaily}
             />
-            
+            <Meta
+                label={t("apy")}
+                text={
+                    loadingDaily || dailyUSDRewardPerStaked == undefined
+                        ? t("fetching")
+                        : state.btcstPrice === 0
+                        ? "-"
+                        : formatApy(dailyUSDRewardPerStaked, FixedNumber.fromString(String(state.btcstPrice))) + '%'
+                }
+                suffix={""}
+                disabled={loadingDaily}
+            />
         </InfoBox>
     );
 };

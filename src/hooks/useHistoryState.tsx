@@ -9,7 +9,7 @@ import LPTokenWithValue from "../types/LPTokenWithValue";
 import { isWETH } from "../utils";
 import { fetchLPTokenWithValue, fetchMyLPTokens, fetchMyPools } from "../utils/fetch-utils";
 import useSDK from "./useSDK";
-import { viewFarmBasicInfo,viewRoundSlot,fetchBtcMiningStat,getTotalRemainingSupplyLocked,viewUserInfo,totalSupplyOfSToken,fetchTotalMinedRTokenInpool, fetchCurrentTotalStakedSTokenInpool,viewTotalRewardInPoolFrom} from "../utils/api-utils";
+import { getBTCSTPrice, viewFarmBasicInfo,viewRoundSlot,fetchBtcMiningStat,getTotalRemainingSupplyLocked,viewUserInfo,totalSupplyOfSToken,fetchTotalMinedRTokenInpool, fetchCurrentTotalStakedSTokenInpool,viewTotalRewardInPoolFrom} from "../utils/api-utils";
 import { getContract, parseBalance } from "../utils";
 import { BTCST,BTCSTFarm,BBTC } from "../constants/contracts";
 import MiningUserInfo from "../types/MiningUserInfo";
@@ -83,6 +83,9 @@ export interface HistoryState {
     recordLastLoadTime:number|undefined;
 
     alreadyLoadedTime:number|undefined;
+
+    getPriceLoading: boolean;
+    btcstPrice: number;
 }
 
 // tslint:disable-next-line:max-func-body-length
@@ -117,6 +120,9 @@ const useHistoryState = () => {
     const [farmInfo,setFarmInfo] = useState<FarmInfo>();
     const [recordLastLoadTime,setRecordLastLoadTime] = useState<number>();
     const [alreadyLoadedTime,setAlreadyLoadedTime] = useState<number>();
+    const [getPriceLoading, setGetPriceLoading] = useState<boolean>(false);
+    const [btcstPrice, setBtcstPrice] = useState<number>(0);
+
     const sToken :Token ={
         name: "Standard BTC Hashrate Token",
         address: BTCST,
@@ -221,6 +227,17 @@ const useHistoryState = () => {
         }
 
     },[provider,signer,farmInfo,recordLastLoadTime]);
+
+    useAsyncEffect(async () => {
+        setGetPriceLoading(true);
+        try{
+            const btcstPrice = await getBTCSTPrice();
+            setBtcstPrice(btcstPrice);
+        } finally {
+            setGetPriceLoading(false);
+        }
+    }, [])
+
 
     useAsyncEffect(async()=>{
         setLoadingMiningStatList(true);
@@ -327,7 +344,9 @@ const useHistoryState = () => {
         loadingDailyRecord,
         selectedRecord,
         setSelectedRecord,
-        records
+        records,
+        btcstPrice,
+        getPriceLoading,
     };
 };
 

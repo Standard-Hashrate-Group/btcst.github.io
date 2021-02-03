@@ -41,6 +41,10 @@ export const formatBalance = (value: ethers.BigNumberish, decimals = 18, maxFrac
     return formatted;
 };
 
+export function formatApy(value: ethers.FixedNumber, price: ethers.FixedNumber) {
+    return formatPercentage(Number(value.mulUnsafe(ethers.FixedNumber.from(365)).divUnsafe(price).toString()), 4);
+}
+
 export const parseBalance = (value: string, decimals = 18) => {
     return ethers.utils.parseUnits(value || "0", decimals);
 };

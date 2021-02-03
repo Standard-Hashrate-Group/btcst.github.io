@@ -138,6 +138,18 @@ export const fetchBtcMiningStat = async ()=>{
     return {code:0,dayList:dayList,hourList:hourList};
 }
 
+export async function getBTCSTPrice() {
+    const response = await fetch("https://584xqc7ik2.execute-api.us-east-2.amazonaws.com/beta/gp-replay");
+
+    const data = await response.json();
+
+    const source = (data?.data?.market_pairs || []).find(pair => {
+        return pair && pair.market_pair === "BTCST/USDT" && pair.exchange?.name === "Binance";
+    });
+
+    return source?.quote?.USD?.price || 0;
+}
+
 export const viewRoundSlot = async(timeKey: number,provider: ethers.providers.JsonRpcProvider)=>{
     const contract = getContract("IMiningFarm",BTCSTFarm,provider);
     const value = await contract.viewRoundSlot(timeKey);
