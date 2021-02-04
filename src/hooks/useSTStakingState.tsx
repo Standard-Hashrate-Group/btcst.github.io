@@ -87,7 +87,9 @@ const useSTStakingState = () => {
                 const freeToMove = await getFreeToTransferAmount(await signer.getAddress(),provider);
                 const userInfoInFarm = await viewUserInfo(await signer.getAddress(),provider);
                 setYourFreeToSendSToken(await freeToMove);
-                setYourSTokenStaked((await userInfoInFarm).amount);
+                const amnt = (await userInfoInFarm).amount;
+                const lockedAmnt = (await userInfoInFarm).lockedAmount;
+                setYourSTokenStaked(ethers.BigNumber.from(amnt).add(ethers.BigNumber.from(lockedAmnt)));
                 const stokenContract = getContract("ERC20", BTCST, signer);
                 setYourTotalSToken(await stokenContract.balanceOf(signer.getAddress()));
                 setTotalSTokenSupply(await totalSupplyOfSToken(provider));

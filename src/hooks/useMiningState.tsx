@@ -82,7 +82,9 @@ const useMiningState = () => {
             setLoadingUserInfo(true);
             const userInfoInFarm = await viewUserInfo(await signer.getAddress(),provider);
             try{
-                setYourMiningPower((await userInfoInFarm).amount);
+                const amnt = (await userInfoInFarm).amount;
+                const lockedAmnt = (await userInfoInFarm).lockedAmount;
+                setYourMiningPower(ethers.BigNumber.from(amnt).add(ethers.BigNumber.from(lockedAmnt)));
                 setUserInfo(await userInfoInFarm);
             }finally{
                 setLoadingYourMiningPower(false);
