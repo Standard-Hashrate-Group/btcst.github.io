@@ -110,5 +110,7 @@
   "current-eta-daily-boost":"Boost Factor",
   "estimated-boost-times":"Estimated Boost Factor",
   "buy-on-binance":"Buy on Binance",
-  "buy-on-pancakeswap":"Buy on PancakeSwap"
+  "buy-on-pancakeswap":"Buy on PancakeSwap",
+  "upgrading": "Upgrading",
+  "upgrading-desc": "The contract is being upgraded, please wait a moment"
 }

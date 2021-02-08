@@ -11,7 +11,8 @@ const ENV = {
           FARM:"0x78650B139471520656b9E7aA7A5e9276814a38e9"
       },
       CHAIN_NAME:"Binance Smart Chain TestNet",
-      WEB_URL:"https://test-get.1-b.tc/"
+      WEB_URL:"https://test-get.1-b.tc/",
+      IS_UPDATING: true
   },
   staging: {
       REACT_APP_NETWORK_URL:"https://bsc-dataseed1.defibit.io",

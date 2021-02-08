@@ -11,7 +11,7 @@ import { GlobalContext } from "../context/GlobalContext";
 import {CHAINID} from "../constants/contracts";
 import useTranslation from "../hooks/useTranslation";
 import getEnvVars from '../../environment';
-const {CHAIN_NAME} =getEnvVars()
+const { CHAIN_NAME } = getEnvVars();
 
 const Screen = props => {
     const { setLocale } = useContext(GlobalContext);
