@@ -109,5 +109,7 @@
   "current-eta-daily-boost": "当日收益增强指数",
   "estimated-boost-times": "预估收益增强指数",
   "buy-on-binance": "跳转到 币安 购买",
-  "buy-on-pancakeswap": "跳转到 Pancakeswap 购买"
+  "buy-on-pancakeswap": "跳转到 Pancakeswap 购买",
+  "upgrading": "升级中",
+  "upgrading-desc": "合约升级中，请稍等片刻"
 }

@@ -14,6 +14,8 @@ import { GlobalContext } from "../context/GlobalContext";
 import useColors from "../hooks/useColors";
 import EmptyScreen from "./EmptyScreen";
 import Web3ReactManager from "../components/Web3ReactManager"
+import getEnvVars from "../../environment";
+const { IS_UPDATING } = getEnvVars();
 
 // const FarmingScreen = lazy(() => import("./FarmingScreen"));
 // const HarvestScreen = lazy(() => import("./HarvestScreen"));
@@ -28,6 +30,7 @@ const SHTStakeScreen = lazy(()=> import("./SHTStakeScreen"));
 const SHTUnstakeScreen = lazy(()=> import("./SHTUnstakeScreen"));
 const SHTClaimScreen = lazy(()=> import("./SHTClaimScreen"));
 const SHTBridgeScreen = lazy(()=>import("./SHTBridgeScreen"));
+const UpdatingScreen = lazy(()=> import("./UpdatingScreen"));
 
 // const MyLimitOrdersScreen = lazy(() => import("./MyLimitOrdersScreen"));
 // const RemoveLiquidityScreen = lazy(() => import("./RemoveLiquidityScreen"));
@@ -54,33 +57,31 @@ const WebScreens = () => {
             <View style={{ flex: 1, backgroundColor: background }}>
                 <Suspense fallback={<EmptyScreen />}>
                     <Web3ReactManager>
-                    <Switch>
-                        <Route path={"/bridge"}>
-                            <SHTBridgeScreen />
-                        </Route>
-                        <Route path={"/staking/unstake"}>
-                            <SHTUnstakeScreen />
-                        </Route>
-                        <Route path={"/staking"}>
-                            <SHTStakeScreen />
-                        </Route>
-                        <Route path="/mining">
-                            <SHTMiningScreen/>
-                        </Route>
-                        <Route path="/claim">
-                            <SHTClaimScreen/>
-                        </Route>
-                        <Route path="/history">
-                            <SHTHistoryScreen/>
-                        </Route>
-                        <Route path="/about">
-                            <SHTAboutScreen/>
-                        </Route>
-                        <Route path={"/"} exact={true}>
-                            <SHTHomeScreen />
-                        </Route>
-                        <Redirect to={"/"} />
-                    </Switch>
+                        <Switch>
+                            <Route path={"/bridge"}>
+                                <SHTBridgeScreen />
+                            </Route>
+                            <Route path={"/staking/unstake"}>
+                                {IS_UPDATING ? <UpdatingScreen /> : <SHTUnstakeScreen />}
+                            </Route>
+                            <Route path={"/staking"}>{IS_UPDATING ? <UpdatingScreen /> : <SHTStakeScreen />}</Route>
+                            <Route path="/mining">
+                                <SHTMiningScreen />
+                            </Route>
+                            <Route path="/claim">
+                                {IS_UPDATING ? <UpdatingScreen /> : <SHTClaimScreen />}
+                            </Route>
+                            <Route path="/history">
+                                <SHTHistoryScreen />
+                            </Route>
+                            <Route path="/about">
+                                <SHTAboutScreen />
+                            </Route>
+                            <Route path={"/"} exact={true}>
+                                <SHTHomeScreen />
+                            </Route>
+                            <Redirect to={"/"} />
+                        </Switch>
                     </Web3ReactManager>
                 </Suspense>
                 <WebHeader onExpandMenu={() => setMenuExpanded(true)} />
